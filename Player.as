@@ -114,8 +114,8 @@ package
 					//x -= 40*dir;
 					//stunTimer = 40;
 					
-					vx = -attackSpeed - 1;
-					vy = -1.5;
+					vx = -attackSpeed*0.6;
+					vy = -1.2;
 				} else {
 					//enemy.x += 1*dir;
 					//enemy.stunTimer = 40;
