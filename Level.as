@@ -5,12 +5,22 @@ package
 	import net.flashpunk.masks.*;
 	import net.flashpunk.utils.*;
 	
+	import flash.display.*;
+	
 	public class Level extends World
 	{
 		//[Embed(source="images/bg.png")] public static const BgGfx: Class;
 		
 		public var p1:Player;
 		public var p2:Player;
+		
+		public var gameOver:Boolean = false;
+		
+		public var left:Stamp;
+		public var right:Stamp;
+		
+		public var leftCover:Entity;
+		public var rightCover:Entity;
 		
 		public function Level ()
 		{
@@ -20,29 +30,116 @@ package
 			p1.enemy = p2;
 			p2.enemy = p1;
 			
-			addGraphic(new Text("Attack: Z\nBlock: A", 10, 350));
-			addGraphic(new Text("Attack: M\nBlock: K", 0, 350, {width:630, align:"right"}));
+			var block:Image = new Image(Player.BlockGfx);
+			
+			block.color = 0x00FF00;
+			
+			var stamp:Stamp = new Stamp(new BitmapData(640-64, 64), 32, 480-64);
+			left = new Stamp(new BitmapData(32, 480), 0, 0);
+			right = new Stamp(new BitmapData(32, 480), 640-32, 0);
+			
+			var i:int;
+			
+			for (i = 0; i < 18; i++) {
+				FP.point.x = (i) * block.width;
+				FP.point.y = 0;
+				block.render(stamp.source, FP.point, FP.zero);
+			}
+			
+			block.color = 0x00BB00;
+			
+			for (i = 0; i < 18; i++) {
+				FP.point.x = (i) * block.width;
+				FP.point.y = 32;
+				block.render(stamp.source, FP.point, FP.zero);
+			}
+			
+			block.color = 0xFF0000;
+			
+			for (i = 0; i < 15; i++) {
+				FP.point.x = 0;
+				FP.point.y = 32*i;
+				block.render(left.source, FP.point, FP.zero);
+				block.render(right.source, FP.point, FP.zero);
+			}
+			
+			addGraphic(stamp);
+			addGraphic(left);
+			addGraphic(right);
+			
+			leftCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, 0, p1.y);
+			rightCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, FP.width - p1.width*0.5, p1.y);
+			
+			addGraphic(new Text("Attack: Z\nBlock: A", 64, 300));
+			addGraphic(new Text("Attack: M\nBlock: K", 0, 300, {width:640-64, align:"right"}));
+		}
+		
+		private static function drawBlock ():void
+		{
+			
 		}
 		
 		public override function update (): void
 		{
 			// super.update(); // calling everything manually for the time being
 			
-			p1.doMovement();
-			p2.doMovement();
+			if (! gameOver) {
+				p1.doMovement();
+				p2.doMovement();
 			
-			p1.touching = p2.touching = (p1.collideWith(p2, p1.x, p1.y) != null);
+				p1.touching = p2.touching = (p1.collideWith(p2, p1.x, p1.y) != null);
 			
-			p1.doActions();
-			p2.doActions();
+				p1.doActions();
+				p2.doActions();
 			
-			p1.checkPosition();
-			p2.checkPosition();
+				//p1.checkPosition();
+				//p2.checkPosition();
 			
-			while (p1.collideWith(p2, p1.x, p1.y)) {
-				p1.x -= 0.5;
-				p2.x += 0.5;
+				if (p1.x <= 0) {
+					p1.y = p1.floorY;
+					p1.x = 0;
+					gameOver = true;
+				
+					doGameover(-1);
+				}
+			
+				if (p2.x >= FP.width - p2.width) {
+					p2.y = p2.floorY;
+					p2.x = FP.width - p2.width;
+					gameOver = true;
+				
+					doGameover(1);
+				}
+			
+				while (p1.collideWith(p2, p1.x, p1.y)) {
+					p1.x -= 0.5;
+					p2.x += 0.5;
+				}
 			}
+		}
+		
+		private function doGameover (side:int):void
+		{
+			Audio.play("death");
+			
+			var x:Number = (side < 0) ? 0 : 640-32;
+			
+			var cover:Image = Image.createRect(p1.width*0.5, FP.height, FP.screen.color);
+			var e:Entity = addGraphic(cover, -20, x, 0);
+			cover.alpha = 0;
+			
+			FP.tween(cover, {alpha: 1}, 60, {complete:function ():void {
+				var newBlocks:Stamp = (side < 0) ? left : right;
+				newBlocks.x = x + side*32;
+				
+				FP.tween(newBlocks, {x: x}, 60, {complete:function ():void {
+					FP.world = new Level;
+				}});
+				
+				((side < 0) ? leftCover : rightCover).layer = -20;
+				
+				remove(e);
+			}});
 		}
 		
 		public override function render (): void

@@ -37,8 +37,11 @@ package
 		public var vx:Number = 0;
 		public var vy:Number = 0;
 		
-		public var floorY:Number = 400;
+		public var floorY:Number = 480 - 128;
 		public var gravity:Number = 0.1;
+		
+		[Embed(source="block.png")]
+		public static const BlockGfx: Class;
 		
 		public function Player (_dir:int)
 		{
@@ -56,14 +59,24 @@ package
 				color = 0xFF00FF;
 			}
 			
-			y = floorY;
-			x = spawn = 320 - dir*250 - 25;
+			for (var i:int = 0; i < 4; i++) {
+				var img:Image = new Image(BlockGfx);
+				img.x = (i < 2) ? 0 : img.width;
+				img.y = (i % 2) ? 0 : img.height;
+				img.color = color;
+				addGraphic(img);
+			}
 			
-			graphic = Image.createRect(50, 50, 0xFF0000);
+			//graphic = Image.createRect(50, 50, 0xFF0000);
 			
-			setHitbox(50, 50);
+			setHitbox(64, 64);
 			
 			type = "player";
+			
+			y = floorY;
+			x = spawn = 320 - dir*(320 - width) - width;
+			
+			layer = -10;
 		}
 		
 		public function doMovement (): void
@@ -101,6 +114,9 @@ package
 			} else {
 				x += dir*walkSpeed;
 			}
+			
+			if (x < width) x = width;
+			if (x > FP.width - width*2) x = FP.width - width*2;
 		}
 		
 		public function doActions (): void
@@ -136,13 +152,15 @@ package
 			if (x > FP.width - width) x = FP.width - width;
 		}
 		
-		public override function render ():void
+		/*public override function render ():void
 		{
 			var t:Number = stunTimer / 20.0;
 			
 			var c:uint = FP.colorLerp(color, 0xFF0000, t);
 			
-			Draw.rect(x, y, width, height, c);
+			image.color = c;
+			
+			return;
 			
 			Draw.rect(x+5, y-15, width-10, 10, 0xFFFFFF);
 			Draw.rect(x+7, y-13, width-14, 6, 0x000000);
@@ -152,7 +170,7 @@ package
 			c = FP.colorLerp(0xFF0000, 0x00FF00, t);
 			
 			Draw.rect(x+7, y-13, (width-14)*t, 6, c);
-		}
+		}*/
 	}
 }
 
