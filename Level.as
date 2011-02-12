@@ -20,7 +20,7 @@ package
 			p1.enemy = p2;
 			p2.enemy = p1;
 			
-			addGraphic(new Text("Attack: A\nBlock: Z", 10, 350));
+			addGraphic(new Text("Attack: Z\nBlock: A", 10, 350));
 			addGraphic(new Text("Attack: M\nBlock: K", 0, 350, {width:630, align:"right"}));
 		}
 		
@@ -35,6 +35,9 @@ package
 			
 			p1.doActions();
 			p2.doActions();
+			
+			p1.checkPosition();
+			p2.checkPosition();
 			
 			while (p1.collideWith(p2, p1.x, p1.y)) {
 				p1.x -= 0.5;

@@ -27,8 +27,12 @@ package
 		public var blockKey:uint;
 		
 		public var stunTimer:int;
+		public var health:Number = maxHealth;
+		public var maxHealth:Number = 100;
 		
 		public var enemy:Player;
+		
+		public var color:uint;
 		
 		public function Player (_dir:int)
 		{
@@ -37,9 +41,13 @@ package
 			if (dir > 0) {
 				attackKey = Key.Z;
 				blockKey = Key.A;
+				
+				color = 0xFFFF00;
 			} else {
 				attackKey = Key.M;
 				blockKey = Key.K;
+				
+				color = 0xFF00FF;
 			}
 			
 			y = 400;
@@ -59,6 +67,7 @@ package
 			
 			if (stunTimer > 0) {
 				stunTimer--;
+				
 				return;
 			}
 			
@@ -71,24 +80,49 @@ package
 			} else {
 				x += dir*walkSpeed;
 			}
-			
-			if (x < 0) x = 0;
-			if (x > FP.width - width) x = FP.width - width;
 		}
 		
 		public function doActions (): void
 		{
 			if (attacking && touching) {
 				if (enemy.attacking) {
-					x -= 50*dir;
+					x -= 80*dir;
 					
 					stunTimer = 10;
 				} else if (enemy.blocking) {
-					x -= 20*dir;
+					x -= 40*dir;
 				
 					stunTimer = 20;
+				} else {
+					enemy.x += 1*dir;
+					enemy.stunTimer = 20;
+					enemy.health -= 1;
 				}
 			}
+		}
+		
+		public function checkPosition ():void
+		{
+			if (x < 0) x = 0;
+			if (x > FP.width - width) x = FP.width - width;
+		}
+		
+		public override function render ():void
+		{
+			var t:Number = stunTimer / 20.0;
+			
+			var c:uint = FP.colorLerp(color, 0xFF0000, t);
+			
+			Draw.rect(x, y, width, height, c);
+			
+			Draw.rect(x+5, y-15, width-10, 10, 0xFFFFFF);
+			Draw.rect(x+7, y-13, width-14, 6, 0x000000);
+			
+			t = health/maxHealth;
+			
+			c = FP.colorLerp(0xFF0000, 0x00FF00, t);
+			
+			Draw.rect(x+7, y-13, (width-14)*t, 6, c);
 		}
 	}
 }
