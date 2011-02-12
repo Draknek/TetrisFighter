@@ -69,7 +69,7 @@ package
 		public function doMovement (): void
 		{
 			blocking = Input.check(blockKey);
-			attacking = Input.check(attackKey);
+			attacking = false;
 			
 			if (y < floorY || vy < 0) {
 				vy += gravity;
@@ -89,6 +89,8 @@ package
 				
 				return;
 			}
+			
+			attacking = Input.check(attackKey);
 			
 			var oldX:Number = x;
 			
@@ -114,8 +116,8 @@ package
 					//x -= 40*dir;
 					//stunTimer = 40;
 					
-					vx = -attackSpeed*0.6;
-					vy = -1.2;
+					vx = -attackSpeed*0.5;
+					vy = -1.5;
 				} else {
 					//enemy.x += 1*dir;
 					//enemy.stunTimer = 40;
