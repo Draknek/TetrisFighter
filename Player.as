@@ -34,6 +34,12 @@ package
 		
 		public var color:uint;
 		
+		public var vx:Number = 0;
+		public var vy:Number = 0;
+		
+		public var floorY:Number = 400;
+		public var gravity:Number = 0.1;
+		
 		public function Player (_dir:int)
 		{
 			dir = _dir;
@@ -50,7 +56,7 @@ package
 				color = 0xFF00FF;
 			}
 			
-			y = 400;
+			y = floorY;
 			x = spawn = 320 - dir*250 - 25;
 			
 			graphic = Image.createRect(50, 50, 0xFF0000);
@@ -64,6 +70,19 @@ package
 		{
 			blocking = Input.check(blockKey);
 			attacking = Input.check(attackKey);
+			
+			if (y < floorY || vy < 0) {
+				vy += gravity;
+				
+				x += vx * dir;
+				y += vy;
+				
+				if (y >= floorY) {
+					y = floorY;
+				} else {
+					return;
+				}
+			}
 			
 			if (stunTimer > 0) {
 				stunTimer--;
@@ -86,17 +105,25 @@ package
 		{
 			if (attacking && touching) {
 				if (enemy.attacking) {
-					x -= 80*dir;
+					//x -= 80*dir;
+					//stunTimer = 60;
 					
-					stunTimer = 10;
+					vx = -attackSpeed*0.5;
+					vy = -1.5;
 				} else if (enemy.blocking) {
-					x -= 40*dir;
-				
-					stunTimer = 20;
+					//x -= 40*dir;
+					//stunTimer = 40;
+					
+					vx = -attackSpeed - 1;
+					vy = -1.5;
 				} else {
-					enemy.x += 1*dir;
-					enemy.stunTimer = 20;
-					enemy.health -= 1;
+					//enemy.x += 1*dir;
+					//enemy.stunTimer = 40;
+					enemy.health -= 10;
+					
+					
+					enemy.vx = -attackSpeed - 1;
+					enemy.vy = -1.5;
 				}
 			}
 		}
