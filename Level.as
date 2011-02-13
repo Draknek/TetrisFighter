@@ -22,6 +22,9 @@ package
 		public var leftCover:Entity;
 		public var rightCover:Entity;
 		
+		public static var livesP1:int = 10;
+		public static var livesP2:int = 10;
+		
 		public function Level ()
 		{
 			add(p1 = new Player(1));
@@ -99,6 +102,8 @@ package
 					p1.y = p1.floorY;
 					p1.x = 32;
 					gameOver = true;
+					
+					livesP1--;
 				
 					doGameover(-1);
 				}
@@ -107,6 +112,8 @@ package
 					p2.y = p2.floorY;
 					p2.x = FP.width - 32;
 					gameOver = true;
+					
+					livesP2--;
 				
 					doGameover(1);
 				}

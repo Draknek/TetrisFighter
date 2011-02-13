@@ -45,6 +45,11 @@ package
 		[Embed(source="block.png")]
 		public static const BlockGfx: Class;
 		
+		public var lifeImage:Image = new Image(LifeGfx);
+		
+		[Embed(source="life.png")]
+		public static const LifeGfx: Class;
+		
 		public var playedSound:Boolean = false;
 		
 		public function Player (_dir:int)
@@ -193,6 +198,17 @@ package
 			FP.point.x = x;
 			FP.point.y = y + 32;
 			image.render(FP.buffer, FP.point, FP.camera);
+			
+			lifeImage.centerOO();
+			
+			var lives:int = (Level(world).p1 == this) ? Level.livesP1 : Level.livesP2;
+			
+			for (var i:int = 0; i < lives; i++) {
+				FP.point.x = 320 - (320 - 32 - 16)*dir;
+				FP.point.y = 16 + i*32;
+				lifeImage.render(FP.buffer, FP.point, FP.camera);
+			}
+			
 		}
 	}
 }
