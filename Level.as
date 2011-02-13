@@ -73,8 +73,8 @@ package
 			leftCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, 0, p1.y);
 			rightCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, FP.width - p1.width*0.5, p1.y);
 			
-			addGraphic(new Text("Attack: Z\nBlock: A\nJump: Z+A", 64, 280));
-			addGraphic(new Text("Attack: M\nBlock: K\nJump: M+K", 0, 280, {width:640-64, align:"right"}));
+			addGraphic(new Text("Attack: Z\nBlock: A\nJump: Hold Z+A", 64, 280));
+			addGraphic(new Text("Attack: M\nBlock: K\nJump: Hold M+K", 0, 280, {width:640-64, align:"right"}));
 		}
 		
 		private static function drawBlock ():void
@@ -118,7 +118,7 @@ package
 					doGameover(1);
 				}
 			
-				while (p1.collideWith(p2, p1.x, p1.y)) {
+				if (p1.collideWith(p2, p1.x, p1.y)) {
 					p1.x -= 0.5;
 					p2.x += 0.5;
 				}
