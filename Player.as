@@ -69,7 +69,7 @@ package
 			type = "player";
 			
 			y = floorY;
-			x = spawn = 320 - dir*(640 - width*7);
+			x = spawn = 320 - dir*(640 - width*8);
 			
 			layer = -10;
 		}
@@ -113,7 +113,7 @@ package
 				
 				if (jumpTimer > maxJumpTimer) {
 					vy = -3.0;
-					vx = attackSpeed*1.2;
+					vx = attackSpeed*1.0;
 					jumpAttacking = true;
 					jumpTimer = 0;
 				}
@@ -145,12 +145,12 @@ package
 						vx = -attackSpeed*0.25;
 						vy = -1.0;
 					} else if (enemy.blocking) {
-						enemy.vx = -attackSpeed * 1.0;
+						enemy.vx = -attackSpeed * 0.75;
 						enemy.vy = -2.5;
 						
 						vx *= 0.5;
 					} else {
-						enemy.vx = -attackSpeed * 1.5;
+						enemy.vx = -attackSpeed * 1.25;
 						enemy.vy = -2.5;
 					}
 				} else if (enemy.attacking) {
