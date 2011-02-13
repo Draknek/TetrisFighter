@@ -45,6 +45,8 @@ package
 		[Embed(source="block.png")]
 		public static const BlockGfx: Class;
 		
+		public var playedSound:Boolean = false;
+		
 		public function Player (_dir:int)
 		{
 			dir = _dir;
@@ -76,6 +78,8 @@ package
 		
 		public function doMovement (): void
 		{
+			playedSound = false;
+			
 			blocking = Input.check(blockKey);
 			attacking = false;
 			jumpAttacking = false;
@@ -140,7 +144,11 @@ package
 		public function doActions (): void
 		{
 			if (attacking && touching) {
-				Audio.play("hit");
+				if (! enemy.playedSound) {
+					Audio.play("hit");
+					playedSound = true;
+				}
+				
 				if (jumpAttacking) {
 					if (enemy.jumpAttacking) {
 						vx = -attackSpeed*0.25;
