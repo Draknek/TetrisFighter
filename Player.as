@@ -19,9 +19,9 @@ package
 		
 		public var spawn:Number = 0;
 		
-		public var attackSpeed:Number = 6;
+		public var attackSpeed:Number = 4;
 		public var walkSpeed:Number = 0;
-		public var retreatSpeed:Number = 2;
+		public var retreatSpeed:Number = 1;
 		
 		public var attackKey:uint;
 		public var blockKey:uint;
@@ -123,9 +123,9 @@ package
 					vy = -1.5;
 				} else if (enemy.blocking) {
 					vx = -attackSpeed*0.5;
-					vy = -1.5;
+					vy = -2.0;
 				} else {
-					enemy.vx = -attackSpeed - 1;
+					enemy.vx = -attackSpeed * 1.5;
 					enemy.vy = -1.5;
 				}
 			}
