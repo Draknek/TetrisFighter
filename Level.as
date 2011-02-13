@@ -139,6 +139,19 @@ package
 				((side < 0) ? leftCover : rightCover).layer = -20;
 				
 				remove(e);
+				
+				var victor:Player = (side < 0) ? p2 : p1;
+				var loser:Player = (side < 0) ? p1 : p2;
+				
+				FP.tween(victor, {x: victor.spawn, y: 480-128}, 60, {tweener: FP.tweener});
+				
+				var cover2:Image = Image.createRect(64, 64, FP.screen.color);
+				
+				addGraphic(cover2, -20, loser.x-32, loser.y);
+				
+				cover2.alpha = 0;
+				
+				FP.tween(cover2, {alpha: 1}, 60);
 			}});
 		}
 		
