@@ -70,8 +70,8 @@ package
 			leftCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, 0, p1.y);
 			rightCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, FP.width - p1.width*0.5, p1.y);
 			
-			addGraphic(new Text("Attack: Z\nBlock: A\nHold Z and A: Jump attack", 64, 280));
-			addGraphic(new Text("Attack: M\nBlock: K\nHold M and K: Jump attack", 0, 280, {width:640-64, align:"right"}));
+			addGraphic(new Text("Attack: Z\nBlock: A\nJump: Z+A", 64, 280));
+			addGraphic(new Text("Attack: M\nBlock: K\nJump: M+K", 0, 280, {width:640-64, align:"right"}));
 		}
 		
 		private static function drawBlock ():void
