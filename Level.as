@@ -77,11 +77,6 @@ package
 			addGraphic(new Text("Attack: M\nBlock: K\nJump: Hold M+K", 0, 280, {width:640-64, align:"right"}));
 		}
 		
-		private static function drawBlock ():void
-		{
-			
-		}
-		
 		public override function update (): void
 		{
 			// super.update(); // calling everything manually for the time being
