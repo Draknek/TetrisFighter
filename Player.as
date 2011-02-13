@@ -9,6 +9,7 @@ package
 	{
 		public var blocking:Boolean = false;
 		public var attacking:Boolean = false;
+		public var jumpAttacking:Boolean = false;
 		public var touching:Boolean = false;
 		
 		// use these to differentiate blocks?
@@ -26,9 +27,8 @@ package
 		public var attackKey:uint;
 		public var blockKey:uint;
 		
-		public var stunTimer:int;
-		public var health:Number = maxHealth;
-		public var maxHealth:Number = 100;
+		public var jumpTimer:int;
+		public var maxJumpTimer:int = 45;
 		
 		public var enemy:Player;
 		
@@ -39,6 +39,8 @@ package
 		
 		public var floorY:Number = 480 - 128;
 		public var gravity:Number = 0.1;
+		
+		public var image:Image;
 		
 		[Embed(source="block.png")]
 		public static const BlockGfx: Class;
@@ -59,13 +61,8 @@ package
 				color = 0xFF00FF;
 			}
 			
-			for (var i:int = 0; i < 4; i++) {
-				var img:Image = new Image(BlockGfx);
-				img.x = (i < 2) ? 0 : -img.width;
-				img.y = (i % 2) ? 0 : img.height;
-				img.color = color;
-				addGraphic(img);
-			}
+			image = new Image(BlockGfx);
+			image.color = color;
 			
 			setHitbox(64, 64, 32, 0);
 			
@@ -81,12 +78,20 @@ package
 		{
 			blocking = Input.check(blockKey);
 			attacking = false;
+			jumpAttacking = false;
 			
 			if (y < floorY || vy < 0) {
+				jumpTimer = 0;
+				
 				vy += gravity;
 				
 				x += vx * dir;
 				y += vy;
+				
+				if (vx > 0) {
+					attacking = true;
+					jumpAttacking = true;
+				}
 				
 				if (y >= floorY) {
 					y = floorY;
@@ -95,15 +100,32 @@ package
 				}
 			}
 			
-			if (stunTimer > 0) {
-				stunTimer--;
-				
-				return;
-			}
-			
 			attacking = Input.check(attackKey);
 			
-			if (blocking) {
+			if (! blocking || !attacking) {
+				jumpTimer = 0;
+			
+				y += (floorY - y)*0.1;
+			}
+			
+			if (blocking && attacking) {
+				jumpTimer++;
+				
+				if (jumpTimer > maxJumpTimer) {
+					vy = -3.0;
+					vx = attackSpeed*1.2;
+					jumpAttacking = true;
+					jumpTimer = 0;
+				}
+				
+				if (jumpTimer % 15 == 0) {
+					x -= 1*dir;
+					y += 1;
+				}
+				
+				blocking = false;
+				attacking = false;
+			} else if (blocking) {
 				x -= dir*retreatSpeed;
 			} else if (attacking) {
 				x += dir*attackSpeed;
@@ -118,7 +140,20 @@ package
 		public function doActions (): void
 		{
 			if (attacking && touching) {
-				if (enemy.attacking) {
+				if (jumpAttacking) {
+					if (enemy.jumpAttacking) {
+						vx = -attackSpeed*0.25;
+						vy = -1.0;
+					} else if (enemy.blocking) {
+						enemy.vx = -attackSpeed * 1.0;
+						enemy.vy = -2.5;
+						
+						vx *= 0.5;
+					} else {
+						enemy.vx = -attackSpeed * 1.5;
+						enemy.vy = -2.5;
+					}
+				} else if (enemy.attacking) {
 					vx = -attackSpeed*0.5;
 					vy = -1.5;
 				} else if (enemy.blocking) {
@@ -129,6 +164,26 @@ package
 					enemy.vy = -1.5;
 				}
 			}
+		}
+		
+		public override function render ():void
+		{
+			var t:Number = jumpTimer / maxJumpTimer;
+			
+			image.color = FP.colorLerp(color, 0xFF0000, t);
+			
+			FP.point.x = x;
+			FP.point.y = y;
+			image.render(FP.buffer, FP.point, FP.camera);
+			FP.point.x = x - 32;
+			FP.point.y = y;
+			image.render(FP.buffer, FP.point, FP.camera);
+			FP.point.x = x - 32;
+			FP.point.y = y + 32;
+			image.render(FP.buffer, FP.point, FP.camera);
+			FP.point.x = x;
+			FP.point.y = y + 32;
+			image.render(FP.buffer, FP.point, FP.camera);
 		}
 	}
 }
