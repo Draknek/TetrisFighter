@@ -13,6 +13,12 @@ package
 		[Embed(source="audio/death.mp3")]
 		public static var DeathSfx:Class;
 		
+		[Embed(source="audio/blip.mp3")]
+		public static var HitSfx:Class;
+		
+		[Embed(source="audio/blip2.mp3")]
+		public static var Hit2Sfx:Class;
+		
 		private static var sounds:Object = {};
 		
 		private static var _mute:Boolean = false;
@@ -35,9 +41,10 @@ package
 				o.addEventListener(Event.ADDED_TO_STAGE, stageAdd);
 			}
 			
-			// Create sounds
+			// Create sounds Hit3Sfx, Hit4Sfx
 			
 			sounds["death"] = new Sfx(DeathSfx);
+			sounds["hit"] = new RandomSfx([HitSfx, Hit2Sfx]);
 		}
 		
 		public static function play (sound:String):void

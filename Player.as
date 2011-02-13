@@ -140,6 +140,7 @@ package
 		public function doActions (): void
 		{
 			if (attacking && touching) {
+				Audio.play("hit");
 				if (jumpAttacking) {
 					if (enemy.jumpAttacking) {
 						vx = -attackSpeed*0.25;
