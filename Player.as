@@ -61,20 +61,18 @@ package
 			
 			for (var i:int = 0; i < 4; i++) {
 				var img:Image = new Image(BlockGfx);
-				img.x = (i < 2) ? 0 : img.width;
+				img.x = (i < 2) ? 0 : -img.width;
 				img.y = (i % 2) ? 0 : img.height;
 				img.color = color;
 				addGraphic(img);
 			}
 			
-			//graphic = Image.createRect(50, 50, 0xFF0000);
-			
-			setHitbox(64, 64);
+			setHitbox(64, 64, 32, 0);
 			
 			type = "player";
 			
 			y = floorY;
-			x = spawn = 320 - dir*(320 - width) - width;
+			x = spawn = 320 - dir*(640 - width*7);
 			
 			layer = -10;
 		}
@@ -105,8 +103,6 @@ package
 			
 			attacking = Input.check(attackKey);
 			
-			var oldX:Number = x;
-			
 			if (blocking) {
 				x -= dir*retreatSpeed;
 			} else if (attacking) {
@@ -115,62 +111,25 @@ package
 				x += dir*walkSpeed;
 			}
 			
-			if (x < width) x = width;
-			if (x > FP.width - width*2) x = FP.width - width*2;
+			//if (x < width) x += 1;
+			//if (x > FP.width - width*2) x -= 1;
 		}
 		
 		public function doActions (): void
 		{
 			if (attacking && touching) {
 				if (enemy.attacking) {
-					//x -= 80*dir;
-					//stunTimer = 60;
-					
 					vx = -attackSpeed*0.5;
 					vy = -1.5;
 				} else if (enemy.blocking) {
-					//x -= 40*dir;
-					//stunTimer = 40;
-					
 					vx = -attackSpeed*0.5;
 					vy = -1.5;
 				} else {
-					//enemy.x += 1*dir;
-					//enemy.stunTimer = 40;
-					enemy.health -= 10;
-					
-					
 					enemy.vx = -attackSpeed - 1;
 					enemy.vy = -1.5;
 				}
 			}
 		}
-		
-		public function checkPosition ():void
-		{
-			if (x < 0) x = 0;
-			if (x > FP.width - width) x = FP.width - width;
-		}
-		
-		/*public override function render ():void
-		{
-			var t:Number = stunTimer / 20.0;
-			
-			var c:uint = FP.colorLerp(color, 0xFF0000, t);
-			
-			image.color = c;
-			
-			return;
-			
-			Draw.rect(x+5, y-15, width-10, 10, 0xFFFFFF);
-			Draw.rect(x+7, y-13, width-14, 6, 0x000000);
-			
-			t = health/maxHealth;
-			
-			c = FP.colorLerp(0xFF0000, 0x00FF00, t);
-			
-			Draw.rect(x+7, y-13, (width-14)*t, 6, c);
-		}*/
 	}
 }
 

@@ -95,17 +95,17 @@ package
 				//p1.checkPosition();
 				//p2.checkPosition();
 			
-				if (p1.x <= 0) {
+				if (p1.x <= 32) {
 					p1.y = p1.floorY;
-					p1.x = 0;
+					p1.x = 32;
 					gameOver = true;
 				
 					doGameover(-1);
 				}
 			
-				if (p2.x >= FP.width - p2.width) {
+				if (p2.x >= FP.width - 32) {
 					p2.y = p2.floorY;
-					p2.x = FP.width - p2.width;
+					p2.x = FP.width - 32;
 					gameOver = true;
 				
 					doGameover(1);
