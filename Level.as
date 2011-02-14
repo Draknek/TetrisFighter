@@ -30,8 +30,6 @@ package
 			add(p1 = new Player(1, shape1));
 			add(p2 = new Player(-1, shape2));
 			
-			addGraphic(new Stamp(Main.makeBlock(256, 128)), 0, 300, 192);
-			
 			p1.enemy = p2;
 			p2.enemy = p1;
 			
@@ -162,6 +160,16 @@ package
 		public override function render (): void
 		{
 			super.render();
+		}
+		
+		public override function begin ():void
+		{
+			Input.mouseCursor = "hide";
+		}
+		
+		public override function end ():void
+		{
+			Input.mouseCursor = "auto";
 		}
 	}
 }
