@@ -185,9 +185,17 @@ package
 		
 		public override function render ():void
 		{
-			var t:Number = jumpTimer / maxJumpTimer;
+			if (jumpTimer) {
+				var t:Number = jumpTimer / maxJumpTimer;
 			
-			image.color = FP.colorLerp(color, 0xFF0000, t);
+				image.color = FP.colorLerp(color, 0xFF0000, t);
+			} else if (jumpAttacking || attacking) {
+				image.color = FP.colorLerp(color, 0xFF0000, 0.2);
+			} else if (blocking) {
+				image.color = FP.colorLerp(color, 0xFFFFFF, 0.2);
+			} else {
+				image.color = color;
+			}
 			
 			FP.point.x = x;
 			FP.point.y = y;
