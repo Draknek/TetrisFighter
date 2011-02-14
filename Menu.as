@@ -66,6 +66,25 @@ package
 			random.centerOO();
 			
 			addGraphic(random, 0, x2 + getDelta(2, true), yBlock + getDelta(1, true));
+			
+			var fight:Text = new Text("FIGHT", 0, 0, {size: 30, color: 0x0});
+			
+			var fightBG:BitmapData = Main.makeBlock(150, fight.height+12);
+			
+			FP.point.x = (fightBG.width - fight.width)*0.5;
+			FP.point.y = 6;
+			fight.render(fightBG, FP.point, FP.zero);
+			
+			var fightButton:Button = new Button(0, 0, fightBG, function():void{
+				FP.world = new Level("", "");
+			});
+			
+			fightButton.x = 320 - fightButton.width*0.5;
+			fightButton.y = (yBlock + size2 + 480 - 64 - fightButton.height)*0.5;
+			
+			//fightButton.disabled = true;
+			
+			add(fightButton);
 		}
 		
 		private function makeShape(shape:String, i:int, j:int):void
@@ -99,9 +118,9 @@ package
 		
 		public override function update (): void
 		{
-			super.update();
-			
 			Input.mouseCursor = "auto";
+			
+			super.update();
 			
 			for (var i:int = 0; i < 3; i++) {
 				for (var j:int = 0; j < 3; j++) {
