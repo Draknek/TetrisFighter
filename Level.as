@@ -25,10 +25,12 @@ package
 		public static var livesP1:int = 10;
 		public static var livesP2:int = 10;
 		
-		public function Level ()
+		public function Level (shape1:String="", shape2:String="")
 		{
-			add(p1 = new Player(1));
-			add(p2 = new Player(-1));
+			add(p1 = new Player(1, shape1));
+			add(p2 = new Player(-1, shape2));
+			
+			addGraphic(new Stamp(Main.makeBlock(256, 128)), 0, 300, 192);
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
@@ -73,7 +75,7 @@ package
 			leftCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, 0, p1.y);
 			rightCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, FP.width - p1.width*0.5, p1.y);
 			
-			addGraphic(new Text("Attack: Z\nBlock: A\nJump: Hold Z+A", 64, 280));
+			addGraphic(new Text("Attack: Z\nBlock: A\nJump: Hold Z+A?", 64, 280));
 			addGraphic(new Text("Attack: M\nBlock: K\nJump: Hold M+K", 0, 280, {width:640-64, align:"right"}));
 		}
 		

@@ -52,9 +52,12 @@ package
 		
 		public var playedSound:Boolean = false;
 		
-		public function Player (_dir:int)
+		public var shape:String;
+		
+		public function Player (_dir:int, _shape:String, rotation:int = 0)
 		{
 			dir = _dir;
+			shape = _shape;
 			
 			if (dir > 0) {
 				attackKey = Key.Z;
