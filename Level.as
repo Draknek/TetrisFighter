@@ -22,12 +22,18 @@ package
 		public var leftCover:Entity;
 		public var rightCover:Entity;
 		
-		public static var livesP1:int = 10;
-		public static var livesP2:int = 10;
+		public static var livesP1:int = 0;
+		public static var livesP2:int = 0;
 		
 		public var shake:Number = 0;
 		
 		public var doIntro:Boolean = false;
+		
+		public var p1Intro:Text;
+		public var p2Intro:Text;
+		public var vs:Text;
+		public var p1Controls:Text;
+		public var p2Controls:Text;
 		
 		public function Level (shape1:String="", shape2:String="", doIntro:Boolean = false)
 		{
@@ -79,12 +85,11 @@ package
 			leftCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, 0, p1.y);
 			rightCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, FP.width - p1.width*0.5, p1.y);
 			
-			var p1Intro:Text = new Text("Yellow\nO-Block", 180, 160, {size: 30, align:"center"});
-			var p2Intro:Text = new Text("Purple\nO-Block", 460, 160, {size: 30, align:"center"});
-			var vs:Text = new Text("VS", 320, 160, {size:90});
-			
-			var p1Controls:Text = new Text("Attack: Z\nBlock: A\nJump: Hold Z+A", 180, 240, {align:"center",size:15});
-			var p2Controls:Text = new Text("Attack: M\nBlock: K\nJump: Hold M+K", 460, 240, {align:"center",size:15});
+			p1Intro = new Text("Yellow\nO-Block", 180, 160, {size: 30, align:"center"});
+			p2Intro = new Text("Purple\nO-Block", 460, 160, {size: 30, align:"center"});
+			vs = new Text("VS", 320, 160, {size:90});
+			p1Controls = new Text("Attack: Z\nBlock: A\nJump: Hold Z+A", 180, 240, {align:"center",size:15});
+			p2Controls = new Text("Attack: M\nBlock: K\nJump: Hold M+K", 460, 240, {align:"center",size:15});
 			
 			p1Intro.centerOO();
 			p2Intro.centerOO();
@@ -210,25 +215,59 @@ package
 			
 			FP.tween(this, {shake: 0}, 15);
 			
-			FP.alarm(15, function ():void {
+			var f:Function;
 			
-			FP.tween(cover, {alpha: 1}, 60, {complete:function ():void {
-				var newBlocks:Stamp = (side < 0) ? left : right;
-				newBlocks.x = x + side*32;
+			if (livesP1 >= 0 && livesP2 >= 0) {
+				f = function ():void {
+					var newBlocks:Stamp = (side < 0) ? left : right;
+					newBlocks.x = x + side*32;
+			
+					FP.tween(newBlocks, {x: x}, 60, {complete:function ():void {
+						FP.world = new Level;
+					}});
+			
+					((side < 0) ? leftCover : rightCover).layer = -20;
+			
+					remove(e);
+					
+					FP.tween(victor, {x: victor.spawn, y: 480-128}, 60, {tweener: FP.tweener});
+			
+					FP.tween(loser.image, {alpha: 0}, 60);
+				}
+			} else {
+				FP.tween(vs, {alpha: 0}, 30);
+				FP.tween(p1Controls, {alpha: 0}, 30);
+				FP.tween(p2Controls, {alpha: 0}, 30);
 				
-				FP.tween(newBlocks, {x: x}, 60, {complete:function ():void {
-					FP.world = new Level;
-				}});
+				var victorName:Text = (side < 0) ? p2Intro : p1Intro;
+				var loserName:Text = (side < 0) ? p1Intro : p2Intro;
 				
-				((side < 0) ? leftCover : rightCover).layer = -20;
+				FP.tween(loserName, {alpha: 0}, 30);
 				
-				remove(e);
+				victorName.size = 60;
+				victorName.updateBuffer();
+				victorName.centerOO();
+				victorName.size = 30;
+				victorName.y += victorName.height*0.25;
 				
-				FP.tween(victor, {x: victor.spawn, y: 480-128}, 60, {tweener: FP.tweener});
+				FP.tween(victorName, {size:60, x:320, y:120}, 30);
+				
+				FP.alarm(30, function ():void {
+					var wins:Text = new Text("WINS!", 320, 210, {size:50});
+					
+					wins.centerOO();
+					wins.alpha = 0;
+					
+					addGraphic(wins, -10);
+					
+					FP.tween(wins, {alpha:1}, 30);
+				});
 				
 				FP.tween(loser.image, {alpha: 0}, 60);
-			}});
+			}
 			
+			FP.alarm(15, function ():void {
+				FP.tween(cover, {alpha: 1}, 60, {complete:f});
 			});
 		}
 		
