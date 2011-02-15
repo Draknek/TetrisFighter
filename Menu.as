@@ -36,8 +36,6 @@ package
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x1, yBlock);
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x2, yBlock);
 			
-			Text.font = "modenine";
-			
 			var p1:Text = new Text("P1", 0, 0, {size:40, color:0x0});
 			var p2:Text = new Text("P2", 0, 0, {size:40, color:0x0});
 			p1.centerOO();
@@ -67,19 +65,10 @@ package
 			
 			addGraphic(random, 0, x2 + getDelta(2, true), yBlock + getDelta(1, true));
 			
-			var fight:Text = new Text("FIGHT", 0, 0, {size: 30, color: 0x0});
-			
-			var fightBG:BitmapData = Main.makeBlock(150, fight.height+12);
-			
-			FP.point.x = (fightBG.width - fight.width)*0.5;
-			FP.point.y = 6;
-			fight.render(fightBG, FP.point, FP.zero);
-			
-			var fightButton:Button = new Button(0, 0, fightBG, function():void{
+			var fightButton:Button = makeButton("FIGHT", function():void{
 				FP.world = new Level("", "", true);
 			});
 			
-			fightButton.x = 320 - fightButton.width*0.5;
 			fightButton.y = (yBlock + size2 + 480 - 64 - fightButton.height)*0.5;
 			
 			//fightButton.disabled = true;
@@ -109,6 +98,23 @@ package
 			if (shape == "O") dx = getDelta(0, true);
 			
 			addGraphic(image, 0, x2 + dx, yBlock + dy);
+		}
+		
+		public static function makeButton (text:String, callback:Function):Button
+		{
+			var fight:Text = new Text(text, 0, 0, {size: 30, color: 0x0});
+			
+			var fightBG:BitmapData = Main.makeBlock(200, fight.height+12);
+			
+			FP.point.x = (fightBG.width - fight.width)*0.5;
+			FP.point.y = 6;
+			fight.render(fightBG, FP.point, FP.zero);
+			
+			var fightButton:Button = new Button(0, 0, fightBG, callback);
+			
+			fightButton.x = 320 - fightButton.width*0.5;
+			
+			return fightButton;
 		}
 		
 		private function getDelta (i:int, center:Boolean = false):int

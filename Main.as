@@ -1,6 +1,7 @@
 package
 {
 	import net.flashpunk.*;
+	import net.flashpunk.graphics.*;
 	import flash.display.*;
 	import flash.geom.*;
 	
@@ -10,7 +11,10 @@ package
 		public function Main () 
 		{
 			super(640, 480, 60, true);
-			FP.world = new Menu();
+			
+			Text.font = "modenine";
+			
+			FP.world = new Level("", "", true);
 //			FP.console.enable();
 		}
 		

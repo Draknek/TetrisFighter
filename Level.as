@@ -22,8 +22,8 @@ package
 		public var leftCover:Entity;
 		public var rightCover:Entity;
 		
-		public static var livesP1:int = 0;
-		public static var livesP2:int = 0;
+		public static var livesP1:int = 10;
+		public static var livesP2:int = 10;
 		
 		public var shake:Number = 0;
 		
@@ -35,9 +35,9 @@ package
 		public var p1Controls:Text;
 		public var p2Controls:Text;
 		
-		public function Level (shape1:String="", shape2:String="", doIntro:Boolean = false)
+		public function Level (shape1:String="", shape2:String="", _doIntro:Boolean = false)
 		{
-			this.doIntro = doIntro;
+			this.doIntro = _doIntro;
 			
 			add(p1 = new Player(1, shape1));
 			add(p2 = new Player(-1, shape2));
@@ -135,7 +135,11 @@ package
 		
 		public override function update (): void
 		{
-			// super.update(); // calling everything manually for the time being
+			if (paused && ! doIntro) {
+				Input.mouseCursor = "auto";
+			}
+			
+			super.update(); // note: this doesn't do anything to players
 			
 			camera.x = (FP.random - 0.5)*shake;
 			camera.y = (FP.random - 0.5)*shake;
@@ -252,6 +256,8 @@ package
 					victorName.y += victorName.height*0.25;
 				
 					FP.tween(victorName, {size:60, x:320, y:120}, 30);
+					
+					//Input.mouseCursor = "auto";
 				
 					FP.alarm(30, function ():void {
 						var wins:Text = new Text("WINS!", 320, 210, {size:50});
@@ -262,6 +268,18 @@ package
 						addGraphic(wins, -10);
 					
 						FP.tween(wins, {alpha:1}, 30);
+						
+						var replay:Button = Menu.makeButton("Rematch?", function ():void {
+							FP.world = new Level("", "", true);
+						});
+						
+						replay.y = 300;
+						
+						Image(replay.graphic).alpha = 0;
+						
+						add(replay);
+					
+						FP.tween(replay.graphic, {alpha:1}, 30);
 					});
 				
 					FP.tween(loser.image, {alpha: 0}, 60);
