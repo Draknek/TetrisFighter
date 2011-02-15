@@ -28,6 +28,7 @@ package
 		public var shake:Number = 0;
 		
 		public var doIntro:Boolean = false;
+		public var showCursor:Boolean = false;
 		
 		public var p1Intro:Text;
 		public var p2Intro:Text;
@@ -107,6 +108,9 @@ package
 			addGraphic(p2Controls, -10);
 			
 			if (doIntro) {
+				livesP1 = 10;
+				livesP2 = 10;
+				
 				paused = true;
 				
 				var delay:int = 25;
@@ -135,7 +139,7 @@ package
 		
 		public override function update (): void
 		{
-			if (paused && ! doIntro) {
+			if (paused && showCursor) {
 				Input.mouseCursor = "auto";
 			}
 			
@@ -280,6 +284,8 @@ package
 						add(replay);
 					
 						FP.tween(replay.graphic, {alpha:1}, 30);
+						
+						showCursor = true;
 					});
 				
 					FP.tween(loser.image, {alpha: 0}, 60);
