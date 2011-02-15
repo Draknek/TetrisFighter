@@ -235,35 +235,37 @@ package
 					FP.tween(loser.image, {alpha: 0}, 60);
 				}
 			} else {
-				FP.tween(vs, {alpha: 0}, 30);
-				FP.tween(p1Controls, {alpha: 0}, 30);
-				FP.tween(p2Controls, {alpha: 0}, 30);
+				f = function ():void {
+					FP.tween(vs, {alpha: 0}, 30);
+					FP.tween(p1Controls, {alpha: 0}, 30);
+					FP.tween(p2Controls, {alpha: 0}, 30);
 				
-				var victorName:Text = (side < 0) ? p2Intro : p1Intro;
-				var loserName:Text = (side < 0) ? p1Intro : p2Intro;
+					var victorName:Text = (side < 0) ? p2Intro : p1Intro;
+					var loserName:Text = (side < 0) ? p1Intro : p2Intro;
 				
-				FP.tween(loserName, {alpha: 0}, 30);
+					FP.tween(loserName, {alpha: 0}, 30);
 				
-				victorName.size = 60;
-				victorName.updateBuffer();
-				victorName.centerOO();
-				victorName.size = 30;
-				victorName.y += victorName.height*0.25;
+					victorName.size = 60;
+					victorName.updateBuffer();
+					victorName.centerOO();
+					victorName.size = 30;
+					victorName.y += victorName.height*0.25;
 				
-				FP.tween(victorName, {size:60, x:320, y:120}, 30);
+					FP.tween(victorName, {size:60, x:320, y:120}, 30);
 				
-				FP.alarm(30, function ():void {
-					var wins:Text = new Text("WINS!", 320, 210, {size:50});
+					FP.alarm(30, function ():void {
+						var wins:Text = new Text("WINS!", 320, 210, {size:50});
 					
-					wins.centerOO();
-					wins.alpha = 0;
+						wins.centerOO();
+						wins.alpha = 0;
 					
-					addGraphic(wins, -10);
+						addGraphic(wins, -10);
 					
-					FP.tween(wins, {alpha:1}, 30);
-				});
+						FP.tween(wins, {alpha:1}, 30);
+					});
 				
-				FP.tween(loser.image, {alpha: 0}, 60);
+					FP.tween(loser.image, {alpha: 0}, 60);
+				}
 			}
 			
 			FP.alarm(15, function ():void {
