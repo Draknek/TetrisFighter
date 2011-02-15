@@ -86,7 +86,7 @@
 		}
 		
 		/** @private Called when the Tween completes. */
-		internal function finish():void
+		public function finish():void
 		{
 			switch (_type)
 			{
@@ -184,14 +184,14 @@
 		/** @private */ protected var _t:Number = 0;
 		
 		// Timing information.
-		/** @private */ protected var _time:Number;
-		/** @private */ protected var _target:Number;
+		/** @private */ public var _time:Number;
+		/** @private */ public var _target:Number;
 		
 		// List information.
 		/** @private */ internal var _finish:Boolean;
 		/** @private */ internal var _parent:Tweener;
 		/** @private */ internal var _prev:Tween;
-		/** @private */ internal var _next:Tween;
+		/** @private */ public var _next:Tween;
 		
 		// Static tweening information.
 		/** @private */ private static var _tweens:Vector.<TweenInfo> = new Vector.<TweenInfo>;

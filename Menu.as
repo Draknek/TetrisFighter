@@ -76,7 +76,7 @@ package
 			fight.render(fightBG, FP.point, FP.zero);
 			
 			var fightButton:Button = new Button(0, 0, fightBG, function():void{
-				FP.world = new Level("", "");
+				FP.world = new Level("", "", true);
 			});
 			
 			fightButton.x = 320 - fightButton.width*0.5;
