@@ -9,6 +9,7 @@ package
 	{
 		public var blocking:Boolean = false;
 		public var attacking:Boolean = false;
+		public var charging:Boolean = false;
 		public var jumpAttacking:Boolean = false;
 		public var touching:Boolean = false;
 		
@@ -26,6 +27,7 @@ package
 		
 		public var attackKey:uint;
 		public var blockKey:uint;
+		public var jumpKey:uint;
 		
 		public var jumpTimer:int;
 		public var maxJumpTimer:int = 45;
@@ -61,12 +63,14 @@ package
 			
 			if (dir > 0) {
 				attackKey = Key.Z;
-				blockKey = Key.A;
+				jumpKey = Key.A;
+				blockKey = Key.Q;
 				
 				color = 0xFFFF00;
 			} else {
 				attackKey = Key.M;
-				blockKey = Key.K;
+				jumpKey = Key.K;
+				blockKey = Key.O;
 				
 				color = 0xFF00FF;
 			}
@@ -91,6 +95,7 @@ package
 			blocking = Input.check(blockKey);
 			attacking = false;
 			jumpAttacking = false;
+			charging = false;
 			
 			if (y < floorY || vy < 0) {
 				jumpTimer = 0;
@@ -113,14 +118,21 @@ package
 			}
 			
 			attacking = Input.check(attackKey);
+			charging = Input.check(jumpKey);
 			
-			if (! blocking || !attacking) {
+			if (int(charging) + int(attacking) + int(blocking) > 1) {
+				charging = false;
+				attacking = false;
+				blocking = false;
+			}
+			
+			if (! charging) {
 				jumpTimer = 0;
 			
 				y += (floorY - y)*0.1;
 			}
 			
-			if (blocking && attacking) {
+			if (charging) {
 				jumpTimer++;
 				
 				if (jumpTimer > maxJumpTimer) {

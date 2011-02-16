@@ -89,8 +89,8 @@ package
 			p1Intro = new Text("Yellow\nO-Block", 180, 160, {size: 30, align:"center"});
 			p2Intro = new Text("Purple\nO-Block", 460, 160, {size: 30, align:"center"});
 			vs = new Text("VS", 320, 160, {size:90});
-			p1Controls = new Text("Attack: Z\nBlock: A\nJump: Hold Z+A", 180, 240, {align:"center",size:15});
-			p2Controls = new Text("Attack: M\nBlock: K\nJump: Hold M+K", 460, 240, {align:"center",size:15});
+			p1Controls = new Text("Attack: Z\nJump: Hold A\nBlock: Q", 180, 240, {align:"center",size:15});
+			p2Controls = new Text("Attack: M\nJump: Hold K\nBlock: O", 460, 240, {align:"center",size:15});
 			
 			p1Intro.centerOO();
 			p2Intro.centerOO();
