@@ -22,8 +22,8 @@ package
 		public var leftCover:Entity;
 		public var rightCover:Entity;
 		
-		public static var livesP1:int = 10;
-		public static var livesP2:int = 10;
+		public static var livesP1:int;
+		public static var livesP2:int;
 		
 		public var shake:Number = 0;
 		
@@ -277,7 +277,7 @@ package
 							FP.world = new Level("", "", true);
 						});
 						
-						replay.y = 300;
+						replay.y = 270;
 						
 						Image(replay.graphic).alpha = 0;
 						
