@@ -62,15 +62,15 @@ package
 			shape = _shape;
 			
 			if (dir > 0) {
-				attackKey = Key.Z;
-				jumpKey = Key.A;
-				blockKey = Key.Q;
+				attackKey = Key.D;
+				jumpKey = Key.S;
+				blockKey = Key.A;
 				
 				color = 0xFFFF00;
 			} else {
-				attackKey = Key.M;
+				attackKey = Key.J;
 				jumpKey = Key.K;
-				blockKey = Key.O;
+				blockKey = Key.L;
 				
 				color = 0xFF00FF;
 			}
