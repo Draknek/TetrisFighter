@@ -12,6 +12,7 @@ package
 		public var charging:Boolean = false;
 		public var jumpAttacking:Boolean = false;
 		public var touching:Boolean = false;
+		public var action:String;
 		
 		// use these to differentiate blocks?
 		//public var speed:Number = 4;
@@ -24,10 +25,6 @@ package
 		public var attackSpeed:Number = 4;
 		public var walkSpeed:Number = 0;
 		public var retreatSpeed:Number = 1;
-		
-		public var attackKey:uint;
-		public var blockKey:uint;
-		public var jumpKey:uint;
 		
 		public var jumpTimer:int;
 		public var maxJumpTimer:int = 45;
@@ -62,16 +59,8 @@ package
 			shape = _shape;
 			
 			if (dir > 0) {
-				attackKey = Key.D;
-				jumpKey = Key.S;
-				blockKey = Key.A;
-				
 				color = 0xFFFF00;
 			} else {
-				attackKey = Key.J;
-				jumpKey = Key.K;
-				blockKey = Key.L;
-				
 				color = 0xFF00FF;
 			}
 			
@@ -88,11 +77,13 @@ package
 			layer = -10;
 		}
 		
+		public function decide ():void {}
+		
 		public function doMovement (): void
 		{
 			playedSound = false;
 			
-			blocking = Input.check(blockKey);
+			blocking = (action == "block");
 			attacking = false;
 			jumpAttacking = false;
 			charging = false;
@@ -117,8 +108,8 @@ package
 				}
 			}
 			
-			attacking = Input.check(attackKey);
-			charging = Input.check(jumpKey);
+			attacking = (action == "attack");
+			charging = (action == "jump");
 			
 			if (int(charging) + int(attacking) + int(blocking) > 1) {
 				charging = false;

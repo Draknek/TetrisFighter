@@ -40,8 +40,8 @@ package
 		{
 			this.doIntro = _doIntro;
 			
-			add(p1 = new Player(1, shape1));
-			add(p2 = new Player(-1, shape2));
+			add(p1 = new HumanPlayer(1, shape1));
+			add(p2 = new RandomAI(-1, shape2));
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
@@ -149,7 +149,7 @@ package
 			camera.y = (FP.random - 0.5)*shake;
 			
 			if (paused) {
-				if (doIntro && (Input.pressed(p1.attackKey) || Input.pressed(p2.attackKey))) {
+				if (doIntro && Input.pressed(Key.ANY)) {
 					paused = false;
 					doIntro = false;
 					
@@ -168,6 +168,9 @@ package
 					shake = 0;
 				}
 			} else {
+				p1.decide();
+				p2.decide();
+				
 				p1.doMovement();
 				p2.doMovement();
 			
