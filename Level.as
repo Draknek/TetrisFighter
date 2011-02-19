@@ -28,6 +28,9 @@ package
 		public static var startLivesP1:int = 3;
 		public static var startLivesP2:int = 3;
 		
+		public static var classP1:Class = HumanPlayer;
+		public static var classP2:Class = OppositeAI;//HumanPlayer;
+		
 		public var shake:Number = 0;
 		
 		public var doIntro:Boolean = false;
@@ -43,8 +46,8 @@ package
 		{
 			this.doIntro = _doIntro;
 			
-			add(p1 = new OppositeAI(1, shape1));
-			add(p2 = new OppositeAI(-1, shape2));
+			add(p1 = new classP1(1, shape1));
+			add(p2 = new classP2(-1, shape2));
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
