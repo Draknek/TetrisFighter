@@ -188,30 +188,28 @@ package
 		
 		public override function render ():void
 		{
-			if (jumpTimer) {
-				var t:Number = jumpTimer / maxJumpTimer;
+			var t:Number = jumpTimer / maxJumpTimer;
+		
+			image.color = FP.colorLerp(color, 0xFF0000, t);
 			
-				image.color = FP.colorLerp(color, 0xFF0000, t);
-			} else if (jumpAttacking || attacking) {
-				image.color = FP.colorLerp(color, 0xFF0000, 0.2);
+			FP.point.x = x;
+			FP.point.y = y;
+			image.render(FP.buffer, FP.point, FP.camera);
+			FP.point.x = x - 32;
+			FP.point.y = y;
+			image.render(FP.buffer, FP.point, FP.camera);
+			FP.point.x = x - 32;
+			FP.point.y = y + 32;
+			image.render(FP.buffer, FP.point, FP.camera);
+			FP.point.x = x;
+			FP.point.y = y + 32;
+			image.render(FP.buffer, FP.point, FP.camera);
+			
+			if (jumpAttacking || attacking) {
+				Draw.rectPlus(x - 32, y, 64, 64, 0xFF0000, image.alpha, false, 1.0);
 			} else if (blocking) {
-				image.color = FP.colorLerp(color, 0xFFFFFF, 0.2);
-			} else {
-				image.color = color;
+				Draw.rectPlus(x - 32, y, 64, 64, 0xFFFFFF, image.alpha, false, 1.0);
 			}
-			
-			FP.point.x = x;
-			FP.point.y = y;
-			image.render(FP.buffer, FP.point, FP.camera);
-			FP.point.x = x - 32;
-			FP.point.y = y;
-			image.render(FP.buffer, FP.point, FP.camera);
-			FP.point.x = x - 32;
-			FP.point.y = y + 32;
-			image.render(FP.buffer, FP.point, FP.camera);
-			FP.point.x = x;
-			FP.point.y = y + 32;
-			image.render(FP.buffer, FP.point, FP.camera);
 			
 			lifeImage.centerOO();
 			
