@@ -25,6 +25,9 @@ package
 		public static var livesP1:int;
 		public static var livesP2:int;
 		
+		public static var startLivesP1:int = 3;
+		public static var startLivesP2:int = 3;
+		
 		public var shake:Number = 0;
 		
 		public var doIntro:Boolean = false;
@@ -40,8 +43,8 @@ package
 		{
 			this.doIntro = _doIntro;
 			
-			add(p1 = new HumanPlayer(1, shape1));
-			add(p2 = new RandomAI(-1, shape2));
+			add(p1 = new OppositeAI(1, shape1));
+			add(p2 = new OppositeAI(-1, shape2));
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
@@ -104,12 +107,12 @@ package
 			addGraphic(p1Intro, -10);
 			addGraphic(p2Intro, -10);
 			addGraphic(vs, -10);
-			addGraphic(p1Controls, -10);
-			addGraphic(p2Controls, -10);
+			//addGraphic(p1Controls, -10);
+			//addGraphic(p2Controls, -10);
 			
 			if (doIntro) {
-				livesP1 = 10;
-				livesP2 = 10;
+				livesP1 = startLivesP1;
+				livesP2 = startLivesP2;
 				
 				paused = true;
 				
