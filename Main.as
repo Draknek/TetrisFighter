@@ -14,7 +14,7 @@ package
 			
 			Text.font = "modenine";
 			
-			FP.world = new Level("", "", true);
+			FP.world = new Level(true);
 //			FP.console.enable();
 		}
 		

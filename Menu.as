@@ -66,7 +66,7 @@ package
 			addGraphic(random, 0, x2 + getDelta(2, true), yBlock + getDelta(1, true));
 			
 			var fightButton:Button = makeButton("FIGHT", function():void{
-				FP.world = new Level("", "", true);
+				FP.world = new Level(true);
 			});
 			
 			fightButton.y = (yBlock + size2 + 480 - 64 - fightButton.height)*0.5;

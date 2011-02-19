@@ -25,12 +25,6 @@ package
 		public static var livesP1:int;
 		public static var livesP2:int;
 		
-		public static var startLivesP1:int = 3;
-		public static var startLivesP2:int = 3;
-		
-		public static var classP1:Class = HumanPlayer;
-		public static var classP2:Class = OppositeAI;//HumanPlayer;
-		
 		public var shake:Number = 0;
 		
 		public var doIntro:Boolean = false;
@@ -42,12 +36,12 @@ package
 		public var p1Controls:Text;
 		public var p2Controls:Text;
 		
-		public function Level (shape1:String="", shape2:String="", _doIntro:Boolean = false)
+		public function Level (_doIntro:Boolean = false)
 		{
 			this.doIntro = _doIntro;
 			
-			add(p1 = new classP1(1, shape1));
-			add(p2 = new classP2(-1, shape2));
+			add(p1 = new Settings.classP1(1, Settings.shapeP1));
+			add(p2 = new Settings.classP2(-1, Settings.shapeP2));
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
@@ -110,12 +104,12 @@ package
 			addGraphic(p1Intro, -10);
 			addGraphic(p2Intro, -10);
 			addGraphic(vs, -10);
-			if (classP1 == HumanPlayer) addGraphic(p1Controls, -10);
-			if (classP2 == HumanPlayer) addGraphic(p2Controls, -10);
+			if (Settings.classP1 == HumanPlayer) addGraphic(p1Controls, -10);
+			if (Settings.classP2 == HumanPlayer) addGraphic(p2Controls, -10);
 			
 			if (doIntro) {
-				livesP1 = startLivesP1;
-				livesP2 = startLivesP2;
+				livesP1 = Settings.livesP1;
+				livesP2 = Settings.livesP2;
 				
 				paused = true;
 				
@@ -290,7 +284,7 @@ package
 						FP.tween(wins, {alpha:1}, 30);
 						
 						var replay:Button = Menu.makeButton("Rematch?", function ():void {
-							FP.world = new Level("", "", true);
+							FP.world = new Level(true);
 						});
 						
 						replay.y = 270;
