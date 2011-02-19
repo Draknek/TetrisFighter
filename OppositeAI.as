@@ -43,7 +43,7 @@ package
 				}
 				
 				action = "attack";
-				timer = FP.rand(30) + 20;
+				timer = FP.rand(60) + 20;
 			}
 			
 			timer--;
