@@ -33,6 +33,26 @@ package
 		{
 			addGraphic(new Stamp(BgGfx));
 			
+			var onePlayer:Button = makeButton("One player", function():void{
+				Settings.classP1 = HumanPlayer;
+				Settings.classP2 = OppositeAI;
+				FP.world = new Level(true);
+			});
+			
+			var twoPlayer:Button = makeButton("Two player", function():void{
+				Settings.classP1 = HumanPlayer;
+				Settings.classP2 = HumanPlayer;
+				FP.world = new Level(true);
+			});
+			
+			onePlayer.y = 150;
+			twoPlayer.y = 250;
+			
+			add(onePlayer);
+			add(twoPlayer);
+			
+			return;
+			
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x1, yBlock);
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x2, yBlock);
 			
@@ -128,7 +148,7 @@ package
 			
 			super.update();
 			
-			for (var i:int = 0; i < 3; i++) {
+			/*for (var i:int = 0; i < 3; i++) {
 				for (var j:int = 0; j < 3; j++) {
 					if (i == 1 && j == 1) continue;
 					
@@ -139,10 +159,10 @@ package
 						Input.mouseCursor = "button";
 					}
 				}
-			}
+			}*/
 		}
 		
-		public function test (x:int, y:int, w:int, h:int):Boolean
+		/*public function test (x:int, y:int, w:int, h:int):Boolean
 		{
 			var mx:int = Input.mouseX;
 			var my:int = Input.mouseY;
@@ -185,7 +205,7 @@ package
 			g.endFill();
 			
 			FP.buffer.draw(FP.sprite);
-		}
+		}*/
 	}
 }
 

@@ -14,8 +14,9 @@ package
 			
 			Text.font = "modenine";
 			
-			FP.world = new Level(true);
-//			FP.console.enable();
+			FP.world = new Menu;
+			//FP.world = new Level(true);
+			//FP.console.enable();
 		}
 		
 		public override function init (): void
