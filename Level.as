@@ -110,8 +110,8 @@ package
 			addGraphic(p1Intro, -10);
 			addGraphic(p2Intro, -10);
 			addGraphic(vs, -10);
-			//addGraphic(p1Controls, -10);
-			//addGraphic(p2Controls, -10);
+			if (classP1 == HumanPlayer) addGraphic(p1Controls, -10);
+			if (classP2 == HumanPlayer) addGraphic(p2Controls, -10);
 			
 			if (doIntro) {
 				livesP1 = startLivesP1;
