@@ -219,6 +219,13 @@ package
 		{
 			Audio.play("death");
 			
+			p1.attacking = false;
+			p1.blocking = false;
+			p1.jumpAttacking = false;
+			p2.attacking = false;
+			p2.blocking = false;
+			p2.jumpAttacking = false;
+			
 			var victor:Player = (side < 0) ? p2 : p1;
 			var loser:Player = (side < 0) ? p1 : p2;
 			
