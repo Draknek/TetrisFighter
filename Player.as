@@ -16,6 +16,8 @@ package
 		public var touching:Boolean = false;
 		public var action:String;
 		
+		public var dead:Boolean = false;
+		
 		// use these to differentiate blocks?
 		//public var speed:Number = 4;
 		//public var power:Number = 4;
@@ -221,7 +223,7 @@ package
 		public function makeHole (b:BitmapData):void
 		{
 			FP.rect.x = 0;
-			FP.rect.y = 480 - 128;
+			FP.rect.y = 480 - 128 + 64;
 			FP.rect.width = b.width;
 			FP.rect.height = 64;
 			b.fillRect(FP.rect, FP.screen.color);

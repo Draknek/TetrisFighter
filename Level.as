@@ -15,6 +15,9 @@ package
 		public var p2:Player;
 		
 		public var paused:Boolean = false;
+		public var doIntro:Boolean = false;
+		public var gameOver:Boolean = false;
+		public var showCursor:Boolean = false;
 		
 		public var left:Stamp;
 		public var right:Stamp;
@@ -23,9 +26,6 @@ package
 		public static var livesP2:int;
 		
 		public var shake:Number = 0;
-		
-		public var doIntro:Boolean = false;
-		public var showCursor:Boolean = false;
 		
 		public var p1Intro:Text;
 		public var p2Intro:Text;
@@ -47,9 +47,12 @@ package
 			
 			block.color = 0x00FF00;
 			
+			var sideHeight:int = 480+64;
+			if (Settings.movingSides) sideHeight *= 2;
+			
 			var stamp:Stamp = new Stamp(new BitmapData(640-64, 64), 32, 480-64);
-			left = new Stamp(new BitmapData(32, 480), 0, 0);
-			right = new Stamp(new BitmapData(32, 480), 640-32, 0);
+			left = new Stamp(new BitmapData(32, sideHeight), 0, -64);
+			right = new Stamp(new BitmapData(32, sideHeight), 640-32, -64);
 			
 			var i:int;
 			
@@ -69,11 +72,12 @@ package
 			
 			block.color = 0xFF0000;
 			
-			for (i = 0; i < 15; i++) {
-				FP.point.x = 0;
-				FP.point.y = 32*i;
+			FP.point.x = 0;
+			FP.point.y = 0;
+			while (FP.point.y < sideHeight) {
 				block.render(left.source, FP.point, FP.zero);
 				block.render(right.source, FP.point, FP.zero);
+				FP.point.y += 32;
 			}
 			
 			addGraphic(stamp);
@@ -115,8 +119,8 @@ package
 				p1Intro.x -= 300;
 				p2Intro.x += 300;
 				vs.y -= 300;
-				p1.y = -100;
-				p2.y = -100;
+				p1.y = -96;
+				p2.y = -96;
 			
 				p1Controls.alpha = 0;
 				p2Controls.alpha = 0;
@@ -180,20 +184,12 @@ package
 				//p2.checkPosition();
 			
 				if (p1.x <= 32) {
-					p1.y = p1.floorY;
-					p1.x = 32;
-					paused = true;
-					
 					livesP1--;
 				
 					doGameover(-1);
 				}
 			
 				if (p2.x >= FP.width - 32) {
-					p2.y = p2.floorY;
-					p2.x = FP.width - 32;
-					paused = true;
-					
 					livesP2--;
 				
 					doGameover(1);
@@ -203,6 +199,27 @@ package
 					p1.x -= 0.5;
 					p2.x += 0.5;
 				}
+			}
+			
+			if (gameOver) {
+				p1.action = null;
+				p2.action = null;
+				
+				if (! p1.dead) p1.doMovement();
+				if (! p2.dead) p2.doMovement();
+			
+				while (p1.collideWith(p2, p1.x, p1.y)) {
+					if (! p1.dead) p1.x -= 1;
+					if (! p2.dead) p2.x += 1;
+				}
+				
+				trace(p1.dead ? p2.y : p1.y);
+				trace(p1.dead ? right.y : left.y);
+			}
+			
+			if (Settings.movingSides) {
+				if (! p1.dead) left.y = Math.round(p1.y - p1.floorY - 64);
+				if (! p2.dead) right.y = Math.round(p2.y - p2.floorY - 64);
 			}
 		}
 		
@@ -217,8 +234,19 @@ package
 			p2.blocking = false;
 			p2.jumpAttacking = false;
 			
+			paused = true;
+			gameOver = true;
+			
 			var victor:Player = (side < 0) ? p2 : p1;
 			var loser:Player = (side < 0) ? p1 : p2;
+			
+			if (! Settings.movingSides) {
+				loser.y = loser.floorY;
+			}
+			
+			loser.x = (side < 0) ? 32 : FP.width - loser.width*0.5;
+			
+			loser.dead = true;
 			
 			var x:Number = (side < 0) ? 0 : 640-32;
 			
@@ -236,6 +264,7 @@ package
 				f = function ():void {
 					var newBlocks:Stamp = (side < 0) ? left : right;
 					newBlocks.x = x + side*32;
+					newBlocks.y = -64;
 			
 					FP.tween(newBlocks, {x: x}, 60, {complete:function ():void {
 						FP.world = new Level;
