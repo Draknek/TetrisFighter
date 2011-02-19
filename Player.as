@@ -5,6 +5,8 @@ package
 	import net.flashpunk.masks.*;
 	import net.flashpunk.utils.*;
 	
+	import flash.display.*;
+	
 	public class Player extends Entity
 	{
 		public var blocking:Boolean = false;
@@ -36,7 +38,7 @@ package
 		public var vx:Number = 0;
 		public var vy:Number = 0;
 		
-		public var floorY:Number = 480 - 128;
+		public var floorY:Number = 480 - 64;
 		public var gravity:Number = 0.1;
 		
 		public var image:Image;
@@ -64,10 +66,12 @@ package
 				color = 0xFF00FF;
 			}
 			
-			image = new Image(BlockGfx);
+			image = new Image(Main.makeShape(shape, BlockGfx));
 			image.color = color;
+			image.originX = 32;
+			image.originY = 64;
 			
-			setHitbox(64, 64, 32, 0);
+			setHitbox(64, 64, 32, 64);
 			
 			type = "player";
 			
@@ -195,20 +199,11 @@ package
 			FP.point.x = x;
 			FP.point.y = y;
 			image.render(FP.buffer, FP.point, FP.camera);
-			FP.point.x = x - 32;
-			FP.point.y = y;
-			image.render(FP.buffer, FP.point, FP.camera);
-			FP.point.x = x - 32;
-			FP.point.y = y + 32;
-			image.render(FP.buffer, FP.point, FP.camera);
-			FP.point.x = x;
-			FP.point.y = y + 32;
-			image.render(FP.buffer, FP.point, FP.camera);
 			
 			if (jumpAttacking || attacking) {
-				Draw.rectPlus(x - 32, y, 64, 64, 0xFF0000, image.alpha, false, 1.0);
+				Draw.rectPlus(x - 32, y - 64, 64, 64, 0xFF0000, image.alpha, false, 1.0);
 			} else if (blocking) {
-				Draw.rectPlus(x - 32, y, 64, 64, 0xFFFFFF, image.alpha, false, 1.0);
+				Draw.rectPlus(x - 32, y - 64, 64, 64, 0xFFFFFF, image.alpha, false, 1.0);
 			}
 			
 			lifeImage.centerOO();
@@ -221,6 +216,15 @@ package
 				lifeImage.render(FP.buffer, FP.point, FP.camera);
 			}
 			
+		}
+		
+		public function makeHole (b:BitmapData):void
+		{
+			FP.rect.x = 0;
+			FP.rect.y = 480 - 128;
+			FP.rect.width = b.width;
+			FP.rect.height = 64;
+			b.fillRect(FP.rect, FP.screen.color);
 		}
 	}
 }

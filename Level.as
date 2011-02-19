@@ -19,9 +19,6 @@ package
 		public var left:Stamp;
 		public var right:Stamp;
 		
-		public var leftCover:Entity;
-		public var rightCover:Entity;
-		
 		public static var livesP1:int;
 		public static var livesP2:int;
 		
@@ -83,8 +80,8 @@ package
 			addGraphic(left);
 			addGraphic(right);
 			
-			leftCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, 0, p1.y);
-			rightCover = addGraphic(Image.createRect(p1.width*0.5, p1.height, FP.screen.color), 0, FP.width - p1.width*0.5, p1.y);
+			p1.makeHole(left.source);
+			p2.makeHole(right.source);
 			
 			p1Intro = new Text("Yellow\nO-Block", 180, 160, {size: 30, align:"center"});
 			p2Intro = new Text("Purple\nO-Block", 460, 160, {size: 30, align:"center"});
@@ -244,11 +241,16 @@ package
 						FP.world = new Level;
 					}});
 			
-					((side < 0) ? leftCover : rightCover).layer = -20;
+					FP.rect.x = (side < 0) ? 0 : loser.width - 32;
+					FP.rect.y = 0;
+					FP.rect.width = 32;
+					FP.rect.height = loser.height;
+					loser.image.source.fillRect(FP.rect, 0x0);
+					loser.image.updateBuffer();
 			
 					remove(e);
 					
-					FP.tween(victor, {x: victor.spawn, y: 480-128}, 60, {tweener: FP.tweener});
+					FP.tween(victor, {x: victor.spawn, y: victor.floorY}, 60, {tweener: FP.tweener});
 			
 					FP.tween(loser.image, {alpha: 0}, 60);
 				}

@@ -6,7 +6,7 @@ package
 		public static var livesP2:int = 3;
 		
 		public static var classP1:Class = HumanPlayer;
-		public static var classP2:Class = RandomAI;//HumanPlayer;
+		public static var classP2:Class = OppositeAI;//HumanPlayer;
 		
 		public static var shapeP1:String = "O";
 		public static var shapeP2:String = "O";
