@@ -17,21 +17,24 @@ package
 			if (timer <= 0) {
 				var dx:Number = dir * (enemy.x - x) - 64;
 				
-				if (dx > 48) {
-					action = FP.choose("jump", "attack");
+				if (dx > 80) {
+					var p:Number = 0.5 * Math.min((dx - 48) / 48, 1.0);
+					
+					action = (FP.random < p) ? "jump" : "attack";
 					if (action == "jump") timer = 60;
-					else timer = FP.rand(30) + 10;
+					else timer = FP.rand(20) + 10;
 					return;
 				}
 				
 				if (enemy.attacking) {
-					action = FP.choose("block", "attack");
+					if (y < floorY && !action) action = FP.choose("block", null);
+					else action = "block";
 					timer = FP.rand(15) + 15;
 					return;
 				}
 				
 				if (enemy.blocking) {
-					action = FP.choose(null, "attack");
+					action = FP.choose(null, null, "attack");
 					timer = FP.rand(5) + 5;
 					return;
 				}
