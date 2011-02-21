@@ -17,16 +17,10 @@ package
 			if (timer <= 0) {
 				var dx:Number = dir * (enemy.x - x) - 64;
 				
-				if (dx > 128) {
+				if (dx > 48) {
 					action = FP.choose("jump", "attack");
 					if (action == "jump") timer = 60;
-					else timer = FP.rand(20) + 30;
-					return;
-				}
-				
-				if (dx > 64) {
-					action = "attack";
-					timer = FP.rand(30) + 10;
+					else timer = FP.rand(30) + 10;
 					return;
 				}
 				
