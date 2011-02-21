@@ -31,13 +31,13 @@ package
 				}
 				
 				if (enemy.attacking) {
-					action = "block";
+					action = FP.choose("block", "attack");
 					timer = FP.rand(15) + 15;
 					return;
 				}
 				
 				if (enemy.blocking) {
-					action = null;
+					action = FP.choose(null, "attack");
 					timer = FP.rand(5) + 5;
 					return;
 				}
