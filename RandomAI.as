@@ -18,7 +18,11 @@ package
 				action = FP.choose("attack", "block", "jump");
 				
 				if (action == "jump") {
-					timer = 60;
+					if (Settings.chargeJump) {
+						timer = 60;
+					} else {
+						timer = 15;
+					}
 				} else {
 					timer = FP.rand(30)+20;
 				}

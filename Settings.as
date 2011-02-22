@@ -12,6 +12,8 @@ package
 		public static var shapeP2:String = "O";
 		
 		public static var movingSides:Boolean = true;
+		
+		public static var chargeJump:Boolean = false;
 	}
 }
 

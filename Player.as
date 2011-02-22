@@ -105,6 +105,7 @@ package
 				if (vx > 0) {
 					attacking = true;
 					jumpAttacking = true;
+					blocking = false;
 				}
 				
 				if (y >= floorY) {
@@ -123,35 +124,44 @@ package
 				blocking = false;
 			}
 			
-			if (! charging) {
-				jumpTimer = 0;
+			if (Settings.chargeJump) {
+				if (! charging) {
+					jumpTimer = 0;
 			
-				y += (floorY - y)*0.1;
-			}
+					y += (floorY - y)*0.1;
+				}
 			
-			if (charging) {
-				jumpTimer++;
+				if (charging) {
+					jumpTimer++;
 				
-				if (jumpTimer > maxJumpTimer) {
-					vy = -3.0;
+					if (jumpTimer > maxJumpTimer) {
+						vy = -3.0;
+						vx = attackSpeed*1.0;
+						jumpAttacking = true;
+						jumpTimer = 0;
+					}
+				
+					if (jumpTimer % 15 == 0) {
+						x -= 1*dir;
+						y += 1;
+					}
+				
+					blocking = false;
+					attacking = false;
+				}
+			} else {
+				if (charging) {
+					vy = -2.0;
 					vx = attackSpeed*1.0;
 					jumpAttacking = true;
-					jumpTimer = 0;
+					charging = false;
 				}
-				
-				if (jumpTimer % 15 == 0) {
-					x -= 1*dir;
-					y += 1;
-				}
-				
-				blocking = false;
-				attacking = false;
-			} else if (blocking) {
+			}
+			
+			if (blocking) {
 				x -= dir*retreatSpeed;
 			} else if (attacking) {
 				x += dir*attackSpeed;
-			} else {
-				x += dir*walkSpeed;
 			}
 			
 			//if (x < width) x += 1;
@@ -167,21 +177,41 @@ package
 				}
 				
 				if (jumpAttacking) {
-					if (enemy.jumpAttacking) {
-						vx = -attackSpeed*0.25;
-						vy = -1.0;
-					} else if (enemy.blocking) {
-						enemy.vx = -attackSpeed * 0.75;
-						enemy.vy = -2.5;
+					if (Settings.chargeJump) {
+						if (enemy.jumpAttacking) {
+							vx = -attackSpeed*0.25;
+							vy = -1.0;
+						} else if (enemy.blocking) {
+							enemy.vx = -attackSpeed * 0.75;
+							enemy.vy = -2.5;
 						
-						vx *= 0.5;
+							vx *= 0.5;
+						} else {
+							enemy.vx = -attackSpeed * 1.25;
+							enemy.vy = -2.5;
+						}
 					} else {
-						enemy.vx = -attackSpeed * 1.25;
-						enemy.vy = -2.5;
+						if (enemy.jumpAttacking) {
+							vx = -attackSpeed*0.5;
+							vy -= 2.0;
+						} else if (enemy.blocking) {
+							enemy.vx = -attackSpeed * 0.75;
+							enemy.vy = -2.5;
+						
+							vx *= 0.5;
+						} else if (!enemy.attacking) {
+							enemy.vx = -attackSpeed * 1.25;
+							enemy.vy = -2.5;
+						}
 					}
 				} else if (enemy.attacking) {
-					vx = -attackSpeed*0.5;
-					vy = -1.5;
+					if (!Settings.chargeJump && enemy.jumpAttacking) {
+						enemy.vx = -attackSpeed * 1.1;
+						enemy.vy = -2.5;
+					} else {
+						vx = -attackSpeed*0.5;
+						vy = -1.5;
+					}
 				} else if (enemy.blocking) {
 					vx = -attackSpeed*0.5;
 					vy = -2.0;
