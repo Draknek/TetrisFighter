@@ -130,8 +130,8 @@ package
 				FP.alarm(1      , function ():void {FP.tween(p1Intro, {x:180}, delay)});
 				FP.alarm(delay  , function ():void {FP.tween(vs, {y: 160}, delay)});
 				FP.alarm(delay*2, function ():void {FP.tween(p2Intro, {x:460}, delay)});
-				FP.alarm(delay*3, function ():void {FP.tween(p1, {y:p1.floorY}, delay, {tweener:world})});
-				FP.alarm(delay*3, function ():void {FP.tween(p2, {y:p2.floorY}, delay, {tweener:world})});
+				FP.alarm(delay*3, function ():void {FP.tween(p1, {y:p1.floorY}, delay, {tweener:FP.tweener})});
+				FP.alarm(delay*3, function ():void {FP.tween(p2, {y:p2.floorY}, delay, {tweener:FP.tweener})});
 				FP.alarm(delay*4, function ():void {Audio.play("hit");paused = false; doIntro = false; shake = 8; FP.tween(world, {shake: 0}, delay*0.5)});
 				FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p1Controls, {alpha: 1}, delay*0.5)});
 				FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p2Controls, {alpha: 1}, delay*0.5)});

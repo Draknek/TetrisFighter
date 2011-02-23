@@ -10,6 +10,9 @@ package
 		public function DefensiveAI (_dir:int, _shape:String, _rotation:int = 0)
 		{
 			super(_dir, _shape, _rotation);
+			
+			timer = 15 + FP.rand(15);
+			action = null;
 		}
 		
 		public override function decide ():void
