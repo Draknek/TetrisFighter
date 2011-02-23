@@ -318,13 +318,21 @@ package
 							FP.world = new Level(true);
 						});
 						
-						replay.y = 270;
+						var menu:Button = Menu.makeButton("Menu", function ():void {
+							FP.world = new Menu;
+						});
+						
+						replay.y = 330;
+						menu.y = 270;
 						
 						Image(replay.graphic).alpha = 0;
+						Image(menu.graphic).alpha = 0;
 						
 						add(replay);
+						add(menu);
 					
 						FP.tween(replay.graphic, {alpha:1}, 30);
+						FP.tween(menu.graphic, {alpha:1}, 30);
 						
 						showCursor = true;
 					});

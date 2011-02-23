@@ -34,22 +34,45 @@ package
 			addGraphic(new Stamp(BgGfx));
 			
 			var onePlayer:Button = makeButton("One player", function():void{
+				Settings.chargeJump = false;
 				Settings.classP1 = HumanPlayer;
 				Settings.classP2 = DefensiveAI;
 				FP.world = new Level(true);
 			});
 			
 			var twoPlayer:Button = makeButton("Two player", function():void{
+				Settings.chargeJump = false;
 				Settings.classP1 = HumanPlayer;
 				Settings.classP2 = HumanPlayer;
 				FP.world = new Level(true);
 			});
 			
-			onePlayer.y = 150;
-			twoPlayer.y = 250;
+			var onePlayerOld:Button = makeButton("One player", function():void{
+				Settings.chargeJump = true;
+				Settings.classP1 = HumanPlayer;
+				Settings.classP2 = OppositeAI;
+				FP.world = new Level(true);
+			});
+			
+			var twoPlayerOld:Button = makeButton("Two player", function():void{
+				Settings.chargeJump = true;
+				Settings.classP1 = HumanPlayer;
+				Settings.classP2 = HumanPlayer;
+				FP.world = new Level(true);
+			});
+			
+			onePlayer.y = 130;
+			twoPlayer.y = 180;
+			onePlayerOld.y = 300;
+			twoPlayerOld.y = 350;
 			
 			add(onePlayer);
 			add(twoPlayer);
+			add(onePlayerOld);
+			add(twoPlayerOld);
+			
+			addGraphic(new Text("New", 0, 0, {size: 30, width: 640, align: "center"}), 0, 0, 90);
+			addGraphic(new Text("Old (charge jump)", 0, 0, {size: 30, width: 640, align: "center"}), 0, 0, 260);
 			
 			return;
 			
