@@ -198,16 +198,21 @@ package
 							enemy.vx = -attackSpeed * 0.75;
 							enemy.vy = -2.5;
 						
-							vx *= 0.5;
+							vx *= 0.25;
 						} else if (!enemy.attacking) {
 							enemy.vx = -attackSpeed * 1.25;
 							enemy.vy = -2.5;
+							
+							vx *= 0.75;
 						}
 					}
 				} else if (enemy.attacking) {
 					if (!Settings.chargeJump && enemy.jumpAttacking) {
-						enemy.vx = -attackSpeed * 1.1;
+						enemy.vx = -attackSpeed * 0.75;
 						enemy.vy = -2.5;
+						
+						vy = -1.0;
+						vx = -1.0;
 					} else {
 						vx = -attackSpeed*0.5;
 						vy = -1.5;

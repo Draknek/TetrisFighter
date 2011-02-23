@@ -35,7 +35,7 @@ package
 			
 			var onePlayer:Button = makeButton("One player", function():void{
 				Settings.classP1 = HumanPlayer;
-				Settings.classP2 = RandomAI;
+				Settings.classP2 = DefensiveAI;
 				FP.world = new Level(true);
 			});
 			
