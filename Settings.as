@@ -2,8 +2,8 @@ package
 {
 	public class Settings
 	{
-		public static var livesP1:int = 0;
-		public static var livesP2:int = 0;
+		public static var livesP1:int = 5;
+		public static var livesP2:int = 5;
 		
 		public static var classP1:Class = HumanPlayer;
 		public static var classP2:Class = OppositeAI;//HumanPlayer;

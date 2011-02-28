@@ -12,6 +12,7 @@ package
 		[Embed(source="images/menu.png")] public static const BgGfx: Class;
 		[Embed(source="block-small.png")] public static const SmallBlockGfx: Class;
 		[Embed(source="random.png")] public static const RandomGfx: Class;
+		[Embed(source="images/arrows.png")] public static const ArrowGfx: Class;
 		
 		[Embed(source = 'fonts/MODENINE.TTF', embedAsCFF="false", fontFamily = 'modenine')]
 		public static const ModeNineFont:Class;
@@ -170,6 +171,56 @@ package
 			fightButton.visible = false;
 			
 			add(fightButton);
+			
+			addGraphic(new Stamp(Player.LifeGfx), 0, 64, 480 - 128);
+			addGraphic(new Stamp(Player.LifeGfx), 0, 640-96, 480 - 128);
+			
+			var lives1:Text = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, 96, 480-128+6, {size:20, color:0xFFFFFF});
+			
+			var lives2:Text = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", 640-100-96-1, 480-128+6, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			
+			addGraphic(lives1);
+			addGraphic(lives2);
+			
+			var up1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+			var up2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+			var down1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+			var down2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+			
+			down1.frame = 1;
+			down2.frame = 1;
+			
+			up2.color = 0xFF0000;
+			down2.color = 0xFF0000;
+			
+			var upB1:Button = new Button(96+40, 480-128-2, up1, up2, function ():void {
+				Settings.livesP1 += 1;
+				Settings.livesP1 = FP.clamp(Settings.livesP1, 0, 20);
+				lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
+			});
+			
+			var downB1:Button = new Button(96+40, 480-128-2+18, down1, down2, function ():void {
+				Settings.livesP1 -= 1;
+				Settings.livesP1 = FP.clamp(Settings.livesP1, 0, 20);
+				lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
+			});
+			
+			var upB2:Button = new Button(640-96-40-17, 480-128-2, up1, up2, function ():void {
+				Settings.livesP2 += 1;
+				Settings.livesP2 = FP.clamp(Settings.livesP2, 0, 20);
+				lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x";
+			});
+			
+			var downB2:Button = new Button(640-96-40-17, 480-128-2+18, down1, down2, function ():void {
+				Settings.livesP2 -= 1;
+				Settings.livesP2 = FP.clamp(Settings.livesP2, 0, 20);
+				lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2 + "x";
+			});
+			
+			add(upB1);
+			add(upB2);
+			add(downB1);
+			add(downB2);
 		}
 		
 		private function makeShape(shape:String, i:int, j:int):void
