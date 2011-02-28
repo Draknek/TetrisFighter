@@ -3,6 +3,7 @@
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.display.Stage;
+	import flash.geom.ColorTransform;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -612,6 +613,25 @@
 			return color & 0xFF;
 		}
 		
+		public static function tint (input:*, color:uint, alpha:Number = 1):BitmapData
+		{
+			if (! (input is BitmapData)) input = FP.getBitmap(input);
+			
+			var output:BitmapData = input.clone();
+			
+			color &= 0xFFFFFF;
+			
+			if (color == 0xFFFFFF && alpha == 1) return output;
+			
+			colorTransform.redMultiplier = (color >> 16 & 0xFF) / 255;
+			colorTransform.greenMultiplier = (color >> 8 & 0xFF) / 255;
+			colorTransform.blueMultiplier = (color & 0xFF) / 255;
+			colorTransform.alphaMultiplier = alpha;
+			output.colorTransform(output.rect, colorTransform);
+			
+			return output;
+		}
+		
 		/**
 		 * Fetches a stored BitmapData object represented by the source.
 		 * @param	source		Embedded Bitmap class.
@@ -927,6 +947,7 @@
 		/** @private */ public static var zero:Point = new Point;
 		/** @private */ public static var rect:Rectangle = new Rectangle;
 		/** @private */ public static var matrix:Matrix = new Matrix;
+		/** @private */ public static var colorTransform:ColorTransform = new ColorTransform;
 		/** @private */ public static var sprite:Sprite = new Sprite;
 		/** @private */ public static var entity:Entity;
 	}

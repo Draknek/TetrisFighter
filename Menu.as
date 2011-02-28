@@ -33,7 +33,7 @@ package
 		{
 			addGraphic(new Stamp(BgGfx));
 			
-			var onePlayer:Button = makeButton("One player", function():void{
+			/*var onePlayer:Button = makeButton("One player", function():void{
 				Settings.chargeJump = false;
 				Settings.classP1 = HumanPlayer;
 				Settings.classP2 = DefensiveAI;
@@ -78,7 +78,7 @@ package
 			addGraphic(new Text("New", 0, 0, {size: 30, width: 640, align: "center"}), 0, 0, 90);
 			addGraphic(new Text("Old (charge jump)", 0, 0, {size: 30, width: 640, align: "center"}), 0, 0, 260);
 			
-			return;
+			return;*/
 			
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x1, yBlock);
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x2, yBlock);
@@ -151,13 +151,21 @@ package
 		{
 			var fight:Text = new Text(text, 0, 0, {size: 30, color: 0x0});
 			
-			var fightBG:BitmapData = Main.makeBlock(200, fight.height+12);
+			var fightBG:BitmapData = FP.tint(Main.makeBlock(200, fight.height+12), 0xFF0000);
 			
 			FP.point.x = (fightBG.width - fight.width)*0.5;
 			FP.point.y = 6;
 			fight.render(fightBG, FP.point, FP.zero);
 			
-			var fightButton:Button = new Button(0, 0, fightBG, callback);
+			var fightBG2:BitmapData = FP.tint(Main.makeBlock(200, fight.height+12), 0xFF0000);
+			
+			fight.color = 0xFFFFFF;
+			
+			FP.point.x = (fightBG.width - fight.width)*0.5;
+			FP.point.y = 6;
+			fight.render(fightBG2, FP.point, FP.zero);
+			
+			var fightButton:Button = new Button(0, 0, fightBG, fightBG2, callback);
 			
 			fightButton.x = 320 - fightButton.width*0.5;
 			
@@ -175,7 +183,7 @@ package
 			
 			super.update();
 			
-			/*for (var i:int = 0; i < 3; i++) {
+			for (var i:int = 0; i < 3; i++) {
 				for (var j:int = 0; j < 3; j++) {
 					if (i == 1 && j == 1) continue;
 					
@@ -186,10 +194,10 @@ package
 						Input.mouseCursor = "button";
 					}
 				}
-			}*/
+			}
 		}
 		
-		/*public function test (x:int, y:int, w:int, h:int):Boolean
+		public function test (x:int, y:int, w:int, h:int):Boolean
 		{
 			var mx:int = Input.mouseX;
 			var my:int = Input.mouseY;
@@ -209,7 +217,7 @@ package
 			var dx:int;
 			var dy:int;
 			
-			//g.beginFill(0xFFEEEEEE);
+			g.beginFill(0xFFEEEEEE);
 			g.lineStyle(2, 0x0000FF);
 			
 			for (i = 0; i < 3; i++) {
@@ -232,7 +240,7 @@ package
 			g.endFill();
 			
 			FP.buffer.draw(FP.sprite);
-		}*/
+		}
 	}
 }
 
