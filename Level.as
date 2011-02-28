@@ -154,7 +154,7 @@ package
 			camera.x = (FP.random - 0.5)*shake;
 			camera.y = (FP.random - 0.5)*shake;
 			
-			if (paused) {
+			if (paused || ! FP.focused) {
 				if (doIntro && Input.pressed(Key.ANY)) {
 					paused = false;
 					doIntro = false;
