@@ -11,6 +11,9 @@ package
 		public static var shapeP1:String = "random";
 		public static var shapeP2:String = "random";
 		
+		public static var menuShapeP1:String = null;
+		public static var menuShapeP2:String = null;
+		
 		public static var movingSides:Boolean = true;
 		
 		public static var chargeJump:Boolean = false;

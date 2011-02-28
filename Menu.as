@@ -29,6 +29,8 @@ package
 		public var yBlock:int = 96;
 		public var yText:int = 96;
 		
+		public var fightButton:Button;
+		
 		public function Menu ()
 		{
 			addGraphic(new Stamp(BgGfx));
@@ -93,32 +95,22 @@ package
 			makeShape("J", 0, 0);
 			makeShape("T", 1, 0);
 			makeShape("L", 2, 0);
+			makeShape("random", 0, 1);
 			makeShape("O", 2, 1);
 			makeShape("Z", 0, 2);
 			makeShape("I", 1, 2);
 			makeShape("S", 2, 2);
 			
-			var random:Image;
-			
-			random = new Image(RandomGfx);
-			random.color = 0xFFFF00;
-			random.centerOO();
-			
-			addGraphic(random, 0, x1 + getDelta(0, true), yBlock + getDelta(1, true));
-			
-			random = new Image(RandomGfx);
-			random.color = 0xFF00FF;
-			random.centerOO();
-			
-			addGraphic(random, 0, x2 + getDelta(2, true), yBlock + getDelta(1, true));
-			
-			var fightButton:Button = makeButton("FIGHT", function():void{
+			fightButton = makeButton("FIGHT", function():void{
+				Settings.shapeP1 = Settings.menuShapeP1;
+				Settings.shapeP2 = Settings.menuShapeP2;
 				FP.world = new Level(true);
 			});
 			
 			fightButton.y = (yBlock + size2 + 480 - 64 - fightButton.height)*0.5;
 			
-			//fightButton.disabled = true;
+			fightButton.visible = false;
+			fightButton.collidable = false;
 			
 			add(fightButton);
 		}
@@ -128,23 +120,12 @@ package
 			var dx:int = getDelta(i, true);
 			var dy:int = getDelta(j, true);
 			
-			var bitmap:BitmapData = Main.makeShape(shape, SmallBlockGfx);
-			
-			var image:Image;
-			
-			image = new Image(bitmap);
-			image.color = 0xFFFF00;
-			image.centerOO();
-			
-			addGraphic(image, 0, x1 + dx, yBlock + dy);
-			
-			image = new Image(bitmap);
-			image.color = 0xFF00FF;
-			image.centerOO();
+			add(new BlockButton(x1 + dx, yBlock + dy, size1, shape, "P1"));
 			
 			if (shape == "O") dx = getDelta(0, true);
+			if (shape == "random") dx = getDelta(2, true);
 			
-			addGraphic(image, 0, x2 + dx, yBlock + dy);
+			add(new BlockButton(x2 + dx, yBlock + dy, size1, shape, "P2"));
 		}
 		
 		public static function makeButton (text:String, callback:Function):Button
@@ -183,63 +164,15 @@ package
 			
 			super.update();
 			
-			for (var i:int = 0; i < 3; i++) {
-				for (var j:int = 0; j < 3; j++) {
-					if (i == 1 && j == 1) continue;
-					
-					var dx:int = getDelta(i);
-					var dy:int = getDelta(j);
-					
-					if (test(x1 + dx, yBlock + dy, size1, size1) || test(x2 + dx, yBlock + dy, size1, size1)) {
-						Input.mouseCursor = "button";
-					}
-				}
+			if (Settings.menuShapeP1 && Settings.menuShapeP2) {
+				fightButton.visible = true;
+				fightButton.collidable = true;
 			}
-		}
-		
-		public function test (x:int, y:int, w:int, h:int):Boolean
-		{
-			var mx:int = Input.mouseX;
-			var my:int = Input.mouseY;
-			return (mx >= x && mx < x+w && my >= y && my < y+h);
 		}
 		
 		public override function render (): void
 		{
 			super.render();
-			
-			var g:Graphics = FP.sprite.graphics;
-			
-			g.clear();
-			
-			var i:int;
-			var j:int;
-			var dx:int;
-			var dy:int;
-			
-			g.beginFill(0xFFEEEEEE);
-			g.lineStyle(2, 0x0000FF);
-			
-			for (i = 0; i < 3; i++) {
-				for (j = 0; j < 3; j++) {
-					if (i == 1 && j == 1) continue;
-					
-					dx = getDelta(i);
-					dy = getDelta(j);
-					
-					if (test(x1 + dx, yBlock + dy, size1, size1)) {
-						g.drawRoundRect(x1 + dx, yBlock + dy, size1, size1, padding1);
-					}
-					
-					if (test(x2 + dx, yBlock + dy, size1, size1)) {
-						g.drawRoundRect(x2 + dx, yBlock + dy, size1, size1, padding1);
-					}
-				}
-			}
-			
-			g.endFill();
-			
-			FP.buffer.draw(FP.sprite);
 		}
 	}
 }
