@@ -89,8 +89,63 @@ package
 			var p2:Text = new Text("P2", 0, 0, {size:40, color:0x0});
 			p1.centerOO();
 			p2.centerOO();
-			addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5);
-			addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5);
+			addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5-5);
+			addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5-5);
+			
+			var humanNormal:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5	, {size:20, color:0x0});
+			var humanHover:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0xFF0000});
+			
+			var computerNormal:Text = new Text("AI", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0x0});
+			var computerHover:Text = new Text("AI", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0xFF0000});
+			
+			humanNormal.centerOO();
+			humanHover.centerOO();
+			computerNormal.centerOO();
+			computerHover.centerOO();
+			
+			var controls1:Button = new Button(x1+getDelta(1), yBlock+getDelta(1),
+				(Settings.classP1 == HumanPlayer) ? humanNormal : computerNormal,
+				(Settings.classP1 == HumanPlayer) ? humanHover : computerHover,
+				function():void{
+				if (controls1.normalGraphic == humanNormal) {
+					controls1.normalGraphic = computerNormal;
+					controls1.hoverGraphic = computerHover;
+					
+					Settings.classP1 = DefensiveAI;
+				} else {
+					controls1.normalGraphic = humanNormal;
+					controls1.hoverGraphic = humanHover;
+					
+					Settings.classP1 = HumanPlayer;
+				}
+				Audio.play("block");
+			});
+			controls1.width = size1;
+			controls1.height = size1;
+			
+			add(controls1);
+			
+			var controls2:Button = new Button(x2+getDelta(1), yBlock+getDelta(1),
+				(Settings.classP2 == HumanPlayer) ? humanNormal : computerNormal,
+				(Settings.classP2 == HumanPlayer) ? humanHover : computerHover,
+				function():void{
+				if (controls2.normalGraphic == humanNormal) {
+					controls2.normalGraphic = computerNormal;
+					controls2.hoverGraphic = computerHover;
+					
+					Settings.classP2 = DefensiveAI;
+				} else {
+					controls2.normalGraphic = humanNormal;
+					controls2.hoverGraphic = humanHover;
+					
+					Settings.classP2 = HumanPlayer;
+				}
+				Audio.play("block");
+			});
+			controls2.width = size1;
+			controls2.height = size1;
+			
+			add(controls2);
 			
 			makeShape("J", 0, 0);
 			makeShape("T", 1, 0);
