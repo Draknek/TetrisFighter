@@ -6,6 +6,7 @@ package
 	import net.flashpunk.utils.*;
 	
 	import flash.display.*;
+	import flash.geom.*;
 	
 	public class Player extends Entity
 	{
@@ -56,11 +57,14 @@ package
 		public var playedSound:Boolean = false;
 		
 		public var shape:String;
+		public var outline:Image;
 		
 		public function Player (_dir:int, _shape:String, rotation:int = 0)
 		{
 			dir = _dir;
 			shape = _shape;
+			
+			if (shape == "random") shape = FP.choose(Main.SHAPES);
 			
 			if (dir > 0) {
 				color = 0xFFFF00;
@@ -70,17 +74,32 @@ package
 			
 			image = new Image(Main.makeShape(shape, BlockGfx));
 			image.color = color;
-			image.originX = 32;
-			image.originY = 64;
+			image.originX = image.width*0.5;
+			image.originY = image.height;
 			
-			setHitbox(64, 64, 32, 64);
+			var outlinePoints:Array = new Outline(Main.makeShape(shape, BlockGfx)).points;
+			var outlineBitmap:BitmapData = new BitmapData(image.width, image.height, true, 0x0);
+			for each (var p:Point in outlinePoints) {
+				outlineBitmap.setPixel32(p.x, p.y, 0xFFFFFFFF);
+			}
+			
+			outline = new Image(outlineBitmap);
+			outline.originX = image.width*0.5;
+			outline.originY = image.height;
+			
+			//setHitbox(64, 64, 32, 64);
+			
+			mask = new Pixelmask(Main.makeShape(shape, BlockGfx));//Main.makeShape(shape, {width: 32, height: 32});
+			
+			Hitbox(mask).x = -width*0.5;
+			Hitbox(mask).y = -height;
 			
 			type = "player";
 			
 			y = floorY;
-			x = spawn = 320 - dir*(640 - width*8);
+			x = spawn = 320 - dir*(640 - 64*8);
 			
-			layer = -10;
+			layer = -11;
 		}
 		
 		public function decide ():void {}
@@ -229,6 +248,18 @@ package
 		
 		public override function render ():void
 		{
+			lifeImage.centerOO();
+			
+			var lives:int = (Level(world).p1 == this) ? Level.livesP1 : Level.livesP2;
+			
+			for (var i:int = 0; i < lives; i++) {
+				FP.point.x = 320 - (320 - 32 - 16 - int(i/10)*32)*dir;
+				FP.point.y = 16 + (i%10)*32;
+				lifeImage.render(FP.buffer, FP.point, FP.camera);
+			}
+			
+			
+			
 			var t:Number = jumpTimer / maxJumpTimer;
 		
 			image.color = FP.colorLerp(color, 0xFF0000, t);
@@ -238,30 +269,25 @@ package
 			image.render(FP.buffer, FP.point, FP.camera);
 			
 			if (jumpAttacking || attacking) {
-				Draw.rectPlus(x - 32, y - 64, 64, 64, 0xFF0000, image.alpha, false, 1.0);
+				outline.color = 0xFF0000;
+				outline.render(FP.buffer, FP.point, FP.camera);
 			} else if (blocking) {
-				Draw.rectPlus(x - 32, y - 64, 64, 64, 0xFFFFFF, image.alpha, false, 1.0);
-			}
-			
-			lifeImage.centerOO();
-			
-			var lives:int = (Level(world).p1 == this) ? Level.livesP1 : Level.livesP2;
-			
-			for (var i:int = 0; i < lives; i++) {
-				FP.point.x = 320 - (320 - 32 - 16)*dir;
-				FP.point.y = 16 + i*32;
-				lifeImage.render(FP.buffer, FP.point, FP.camera);
+				outline.color = 0xFFFFFF;
+				outline.render(FP.buffer, FP.point, FP.camera);
 			}
 			
 		}
 		
 		public function makeHole (b:BitmapData):void
 		{
-			FP.rect.x = 0;
-			FP.rect.y = 480 - 128 + 64;
-			FP.rect.width = b.width;
-			FP.rect.height = 64;
-			b.fillRect(FP.rect, FP.screen.color);
+			var alpha:BitmapData = image.source;
+			
+			var cover:BitmapData = new BitmapData(alpha.width, alpha.height, false, FP.screen.color);
+			
+			FP.point.x = (dir > 0) ? 0 : 32 - alpha.width;
+			FP.point.y = 480 - alpha.height;
+			
+			b.copyPixels(cover, cover.rect, FP.point, alpha, FP.zero, true);
 		}
 	}
 }

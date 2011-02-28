@@ -37,6 +37,8 @@ package
 				Settings.chargeJump = false;
 				Settings.classP1 = HumanPlayer;
 				Settings.classP2 = DefensiveAI;
+				Settings.shapeP1 = "random";
+				Settings.shapeP2 = "random";
 				FP.world = new Level(true);
 			});
 			
@@ -44,6 +46,8 @@ package
 				Settings.chargeJump = false;
 				Settings.classP1 = HumanPlayer;
 				Settings.classP2 = HumanPlayer;
+				Settings.shapeP1 = "random";
+				Settings.shapeP2 = "random";
 				FP.world = new Level(true);
 			});
 			

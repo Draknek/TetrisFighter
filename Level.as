@@ -37,6 +37,9 @@ package
 		{
 			this.doIntro = _doIntro;
 			
+			if (Settings.shapeP1 == "random") Settings.shapeP1 = FP.choose(Main.SHAPES);
+			if (Settings.shapeP2 == "random") Settings.shapeP2 = FP.choose(Main.SHAPES);
+			
 			add(p1 = new Settings.classP1(1, Settings.shapeP1));
 			add(p2 = new Settings.classP2(-1, Settings.shapeP2));
 			
@@ -87,8 +90,8 @@ package
 			p1.makeHole(left.source);
 			p2.makeHole(right.source);
 			
-			p1Intro = new Text("Yellow\nO-Block", 180, 160, {size: 30, align:"center"});
-			p2Intro = new Text("Purple\nO-Block", 460, 160, {size: 30, align:"center"});
+			p1Intro = new Text("Yellow\n" + Settings.shapeP1 + "-Block", 180, 160, {size: 30, align:"center"});
+			p2Intro = new Text("Purple\n" + Settings.shapeP2 + "-Block", 460, 160, {size: 30, align:"center"});
 			vs = new Text("VS", 320, 160, {size:90});
 			p1Controls = new Text("Attack: D\nJump: " + (Settings.chargeJump ? "Hold " : "") + "S\nBlock: A", 180, 240, {align:"center",size:15});
 			p2Controls = new Text("Attack: J\nJump: " + (Settings.chargeJump ? "Hold " : "") + "K\nBlock: L", 460, 240, {align:"center",size:15});
@@ -98,6 +101,8 @@ package
 			vs.centerOO();
 			p1Controls.centerOO();
 			p2Controls.centerOO();
+			
+			FP.watch("touching", "width", "height", "dir");
 			
 			p1Intro.color = 0xFFFF00;
 			p2Intro.color = 0xFF00FF;
@@ -183,13 +188,13 @@ package
 				//p1.checkPosition();
 				//p2.checkPosition();
 			
-				if (p1.x <= 32) {
+				if (p1.x <= p1.width*0.5) {
 					livesP1--;
 				
 					doGameover(-1);
 				}
 			
-				if (p2.x >= FP.width - 32) {
+				if (p2.x >= FP.width - p2.width*0.5) {
 					livesP2--;
 				
 					doGameover(1);
@@ -212,14 +217,11 @@ package
 					if (! p1.dead) p1.x -= 1;
 					if (! p2.dead) p2.x += 1;
 				}
-				
-				trace(p1.dead ? p2.y : p1.y);
-				trace(p1.dead ? right.y : left.y);
 			}
 			
 			if (Settings.movingSides) {
-				if (! p1.dead) left.y = Math.round(p1.y - p1.floorY - 64);
-				if (! p2.dead) right.y = Math.round(p2.y - p2.floorY - 64);
+				if (! p1.dead) left.y = Math.ceil(p1.y - p1.floorY - 64);
+				if (! p2.dead) right.y = Math.ceil(p2.y - p2.floorY - 64);
 			}
 		}
 		
@@ -244,13 +246,13 @@ package
 				loser.y = loser.floorY;
 			}
 			
-			loser.x = (side < 0) ? 32 : FP.width - loser.width*0.5;
+			loser.x = (side < 0) ? loser.width*0.5 : FP.width - loser.width*0.5;
 			
 			loser.dead = true;
 			
 			var x:Number = (side < 0) ? 0 : 640-32;
 			
-			var cover:Image = Image.createRect(p1.width*0.5, FP.height, FP.screen.color);
+			var cover:Image = Image.createRect(32, FP.height, FP.screen.color);
 			var e:Entity = addGraphic(cover, -20, x, 0);
 			cover.alpha = 0;
 			

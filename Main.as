@@ -2,6 +2,7 @@ package
 {
 	import net.flashpunk.*;
 	import net.flashpunk.graphics.*;
+	import net.flashpunk.masks.*;
 	import flash.display.*;
 	import flash.geom.*;
 	
@@ -68,7 +69,7 @@ package
 		
 		public static function makeShape (shape:String, input:*):*
 		{
-			input = FP.getBitmap(input);
+			if (input is Class) input = FP.getBitmap(input);
 			
 			var w:int;
 			var h:int;
@@ -83,7 +84,10 @@ package
 				case "T": w = 3; h = 2; break;
 			}
 			
-			var output:BitmapData = new BitmapData(w*input.width, h*input.height, true, 0x0);
+			var output:*;
+			
+			if (input is BitmapData) output = new BitmapData(w*input.width, h*input.height, true, 0x0);
+			else output = new Grid(w*input.width, h*input.height, input.width, input.height);
 			
 			switch (shape) {
 				case "I":
@@ -122,11 +126,18 @@ package
 		
 		private static function placeBlockOnShape (x:int, y:int, input:*, output:*):void
 		{
-			FP.point.x = x*input.width;
-			FP.point.y = y*input.height;
+			if (output is BitmapData) {
+				FP.point.x = x*input.width;
+				FP.point.y = y*input.height;
 			
-			output.copyPixels(input, input.rect, FP.point);
+				output.copyPixels(input, input.rect, FP.point);
+			} else {
+				output.setTile(x, y, true);
+			}
 		}
+		
+		public static const SHAPES:Array = ["I", "J", "L", "O", "S", "Z", "T"];
+			
 	}
 }
 

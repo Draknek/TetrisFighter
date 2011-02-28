@@ -20,8 +20,8 @@ package
 		public var hoverColor:uint = 0xFF0000;
 		public var disabledColor:uint = 0x888888;
 		
-		public var normalLayer:int = -5;
-		public var hoverLayer:int = -6;
+		public var normalLayer:int = -20;
+		public var hoverLayer:int = -21;
 		
 		public function Button (_x:int, _y:int, _gfx:*, _callback:Function, __helpText:String = null, __disabled:Boolean = false)
 		{

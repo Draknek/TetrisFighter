@@ -18,7 +18,7 @@ package
 		public override function decide ():void
 		{
 			if (timer <= 0) {
-				var dx:Number = dir * (enemy.x - x) - 64;
+				var dx:Number = dir * (enemy.x - x) - width*0.5 - enemy.width*0.5;
 				var lx:Number = (dir > 0) ? x : 640 - x;
 				
 				if (dx < 64 && enemy.attacking && ! enemy.jumpAttacking) action = "block";
