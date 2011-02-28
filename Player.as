@@ -72,12 +72,14 @@ package
 				color = 0xFF00FF;
 			}
 			
-			image = new Image(Main.makeShape(shape, BlockGfx));
+			var shapeBitmap:BitmapData = Main.makeShape(shape, rotation, BlockGfx)
+			
+			image = new Image(shapeBitmap);
 			image.color = color;
 			image.originX = image.width*0.5;
 			image.originY = image.height;
 			
-			var outlinePoints:Array = new Outline(Main.makeShape(shape, BlockGfx)).points;
+			var outlinePoints:Array = new Outline(shapeBitmap).points;
 			var outlineBitmap:BitmapData = new BitmapData(image.width, image.height, true, 0x0);
 			for each (var p:Point in outlinePoints) {
 				outlineBitmap.setPixel32(p.x, p.y, 0xFFFFFFFF);
@@ -89,7 +91,7 @@ package
 			
 			//setHitbox(64, 64, 32, 64);
 			
-			mask = new Pixelmask(Main.makeShape(shape, BlockGfx));//Main.makeShape(shape, {width: 32, height: 32});
+			mask = new Pixelmask(shapeBitmap);//Main.makeShape(shape, {width: 32, height: 32});
 			
 			Hitbox(mask).x = -width*0.5;
 			Hitbox(mask).y = -height;

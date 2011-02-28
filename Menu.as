@@ -104,13 +104,15 @@ package
 			fightButton = makeButton("FIGHT", function():void{
 				Settings.shapeP1 = Settings.menuShapeP1;
 				Settings.shapeP2 = Settings.menuShapeP2;
+				Settings.rotationP1 = Settings.menuRotationP1;
+				Settings.rotationP2 = Settings.menuRotationP2;
 				FP.world = new Level(true);
+				Audio.play("hit");
 			});
 			
 			fightButton.y = (yBlock + size2 + 480 - 64 - fightButton.height)*0.5;
 			
 			fightButton.visible = false;
-			fightButton.collidable = false;
 			
 			add(fightButton);
 		}
@@ -166,7 +168,6 @@ package
 			
 			if (Settings.menuShapeP1 && Settings.menuShapeP2) {
 				fightButton.visible = true;
-				fightButton.collidable = true;
 			}
 		}
 		

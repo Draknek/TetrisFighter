@@ -40,7 +40,7 @@ package
 		
 		public override function update (): void
 		{
-			if (!world) return;
+			if (!world || !visible) return;
 			
 			var _x:Number = x;
 			var _y:Number = y;

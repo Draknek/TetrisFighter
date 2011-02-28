@@ -67,7 +67,7 @@ package
 			return source.bitmapData.clone();
 		}
 		
-		public static function makeShape (shape:String, input:*):*
+		public static function makeShape (shape:String, rotation:int, input:*):*
 		{
 			if (input is Class) input = FP.getBitmap(input);
 			
@@ -84,6 +84,14 @@ package
 				case "T": w = 3; h = 2; break;
 			}
 			
+			rotation = rotation % 4;
+			
+			if (rotation == 1 || rotation == 3) {
+				var tmp:int = w;
+				w = h;
+				h = tmp;
+			}
+			
 			var output:*;
 			
 			if (input is BitmapData) output = new BitmapData(w*input.width, h*input.height, true, 0x0);
@@ -91,41 +99,58 @@ package
 			
 			switch (shape) {
 				case "I":
-					placeBlocksOnShape(0, 0, 0, 1, 0, 2, 0, 3, input, output);
+					placeBlocksOnShape(0, 0, 0, 1, 0, 2, 0, 3, input, output, rotation);
 				break;
 				case "J":
-					placeBlocksOnShape(1, 0, 1, 1, 1, 2, 0, 2, input, output);
+					placeBlocksOnShape(1, 0, 1, 1, 1, 2, 0, 2, input, output, rotation);
 				break;
 				case "L":
-					placeBlocksOnShape(0, 0, 0, 1, 0, 2, 1, 2, input, output);
+					placeBlocksOnShape(0, 0, 0, 1, 0, 2, 1, 2, input, output, rotation);
 				break;
 				case "O":
-					placeBlocksOnShape(0, 0, 0, 1, 1, 0, 1, 1, input, output);
+					placeBlocksOnShape(0, 0, 0, 1, 1, 0, 1, 1, input, output, rotation);
 				break;
 				case "S":
-					placeBlocksOnShape(1, 0, 2, 0, 0, 1, 1, 1, input, output);
+					placeBlocksOnShape(1, 0, 2, 0, 0, 1, 1, 1, input, output, rotation);
 				break;
 				case "Z":
-					placeBlocksOnShape(0, 0, 1, 0, 1, 1, 2, 1, input, output);
+					placeBlocksOnShape(0, 0, 1, 0, 1, 1, 2, 1, input, output, rotation);
 				break;
 				case "T":
-					placeBlocksOnShape(0, 0, 1, 0, 2, 0, 1, 1, input, output);
+					placeBlocksOnShape(0, 0, 1, 0, 2, 0, 1, 1, input, output, rotation);
 				break;
 			}
 			
 			return output;
 		}
 		
-		private static function placeBlocksOnShape (x1:int, y1:int, x2:int, y2:int, x3:int, y3:int, x4:int, y4:int, input:*, output:*):void
+		private static function placeBlocksOnShape (x1:int, y1:int, x2:int, y2:int, x3:int, y3:int, x4:int, y4:int, input:*, output:*, rotation:int):void
 		{
-			placeBlockOnShape(x1, y1, input, output);
-			placeBlockOnShape(x2, y2, input, output);
-			placeBlockOnShape(x3, y3, input, output);
-			placeBlockOnShape(x4, y4, input, output);
+			placeBlockOnShape(x1, y1, input, output, rotation);
+			placeBlockOnShape(x2, y2, input, output, rotation);
+			placeBlockOnShape(x3, y3, input, output, rotation);
+			placeBlockOnShape(x4, y4, input, output, rotation);
 		}
 		
-		private static function placeBlockOnShape (x:int, y:int, input:*, output:*):void
+		private static function placeBlockOnShape (x1:int, y1:int, input:*, output:*, rotation:int):void
 		{
+			var w:int = output.width / input.width;
+			var h:int = output.height / input.height;
+			
+			var x:int = x1;
+			var y:int = y1;
+			
+			if (rotation == 1) {
+				x = w - 1 - y1
+				y = x1;
+			} else if (rotation == 2) {
+				x = w - 1 - x1;
+				y = h - 1 - y1;
+			} else if (rotation == 3) {
+				x = y1
+				y = h - 1 - x1;
+			}
+			
 			if (output is BitmapData) {
 				FP.point.x = x*input.width;
 				FP.point.y = y*input.height;

@@ -15,6 +15,8 @@ package
 		public var size:int;
 		public var timer:int = 0;
 		
+		public static var rotations:Object = {};
+		
 		public function BlockButton (_x:int, _y:int, _size:int, _shape:String, _player:String)
 		{
 			x = _x - _size*0.5;
@@ -28,10 +30,19 @@ package
 			
 			setHitbox(_size, _size);
 			
+			if (! rotations[shape+player]) rotations[shape+player] = 0;
+			
+			makeImage();
+			
+			type = "button";
+		}
+		
+		private function makeImage ():void
+		{
 			if (shape == "random") {
 				image = new Image(Menu.RandomGfx);
 			} else {
-				image = new Image(Main.makeShape(shape, Menu.SmallBlockGfx));
+				image = new Image(Main.makeShape(shape, rotations[shape+player], Menu.SmallBlockGfx));
 			}
 			
 			image.color = (player == "P1") ? 0xFFFF00 : 0xFF00FF;
@@ -40,8 +51,6 @@ package
 			image.y = size*0.5;
 			
 			graphic = image;
-			
-			type = "button";
 		}
 		
 		public override function update (): void
@@ -95,7 +104,13 @@ package
 		
 		public function callback ():void
 		{
+			if (Settings["menuShape"+player] == shape && shape != "random") {
+				rotations[shape+player] += 1;
+				makeImage();
+			}
+			
 			Settings["menuShape"+player] = shape;
+			Settings["menuRotation"+player] = rotations[shape+player] % 4;
 			
 			Audio.play("block");
 		}

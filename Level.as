@@ -37,11 +37,18 @@ package
 		{
 			this.doIntro = _doIntro;
 			
-			if (Settings.shapeP1 == "random") Settings.shapeP1 = FP.choose(Main.SHAPES);
-			if (Settings.shapeP2 == "random") Settings.shapeP2 = FP.choose(Main.SHAPES);
+			if (Settings.shapeP1 == "random") {
+				Settings.shapeP1 = FP.choose(Main.SHAPES);
+				Settings.rotationP1 = FP.rand(4);
+			}
 			
-			add(p1 = new Settings.classP1(1, Settings.shapeP1));
-			add(p2 = new Settings.classP2(-1, Settings.shapeP2));
+			if (Settings.shapeP2 == "random") {
+				Settings.shapeP2 = FP.choose(Main.SHAPES);
+				Settings.rotationP1 = FP.rand(4);
+			}
+			
+			add(p1 = new Settings.classP1(1, Settings.shapeP1, Settings.rotationP1));
+			add(p2 = new Settings.classP2(-1, Settings.shapeP2, Settings.rotationP2));
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
