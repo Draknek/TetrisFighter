@@ -44,7 +44,9 @@ package
 			// Create sounds Hit3Sfx, Hit4Sfx
 			
 			sounds["death"] = new Sfx(DeathSfx);
-			sounds["hit"] = new RandomSfx([HitSfx, Hit2Sfx]);
+			sounds["hit"] = new Sfx(Hit2Sfx);
+			sounds["block"] = new Sfx(HitSfx);
+			//sounds["hit"] = new RandomSfx([HitSfx, Hit2Sfx]);
 		}
 		
 		public static function play (sound:String):void

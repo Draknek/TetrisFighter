@@ -190,16 +190,14 @@ package
 		public function doActions (): void
 		{
 			if (attacking && touching) {
-				if (! enemy.playedSound) {
-					Audio.play("hit");
-					playedSound = true;
-				}
+				var sound:String = "hit";
 				
 				if (jumpAttacking) {
 					if (Settings.chargeJump) {
 						if (enemy.jumpAttacking) {
 							vx = -attackSpeed*0.25;
 							vy = -1.0;
+							sound = "block";
 						} else if (enemy.blocking) {
 							enemy.vx = -attackSpeed * 0.75;
 							enemy.vy = -2.5;
@@ -213,6 +211,7 @@ package
 						if (enemy.jumpAttacking) {
 							vx = -attackSpeed*0.5;
 							vy -= 2.0;
+							sound = "block";
 						} else if (enemy.blocking) {
 							enemy.vx = -attackSpeed * 0.75;
 							enemy.vy = -2.5;
@@ -235,13 +234,21 @@ package
 					} else {
 						vx = -attackSpeed*0.5;
 						vy = -1.5;
+						sound = "block";
 					}
 				} else if (enemy.blocking) {
 					vx = -attackSpeed*0.5;
 					vy = -2.0;
+					sound = "block";
 				} else {
 					enemy.vx = -attackSpeed * 1.5;
 					enemy.vy = -1.5;
+				}
+				
+				if (! enemy.playedSound) {
+					
+					Audio.play(sound);
+					playedSound = true;
 				}
 			}
 		}
