@@ -13,6 +13,7 @@ package
 		[Embed(source="block-small.png")] public static const SmallBlockGfx: Class;
 		[Embed(source="random.png")] public static const RandomGfx: Class;
 		[Embed(source="images/arrows.png")] public static const ArrowGfx: Class;
+		[Embed(source="images/rotate.png")] public static const RotateGfx: Class;
 		
 		[Embed(source = 'fonts/MODENINE.TTF', embedAsCFF="false", fontFamily = 'modenine')]
 		public static const ModeNineFont:Class;

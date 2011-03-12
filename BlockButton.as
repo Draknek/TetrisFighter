@@ -81,7 +81,7 @@ package
 				g.clear();
 				
 				if (selected) {
-					g.beginFill((over && Input.mouseDown && selected) ? 0xFFBBBBBB : 0xFFDDDDDD);
+					g.beginFill((false && over && Input.mouseDown && selected) ? 0xFFBBBBBB : 0xFFDDDDDD);
 				}
 				
 				if (over && (timer % 60) < 30) {
@@ -100,11 +100,26 @@ package
 			}
 			
 			super.render();
+			
+			if (shape != "random" && shape != "O" && selected && over && !Input.mouseDown) {
+				FP.point.x = x+2;
+				FP.point.y = y+2;
+				
+				var rotate:BitmapData = FP.getBitmap(Menu.RotateGfx);
+				
+				FP.buffer.copyPixels(rotate, rotate.rect, FP.point, null, null, true);
+			}
 		}
 		
 		public function callback ():void
 		{
-			if (Settings["menuShape"+player] == shape && shape != "random") {
+			var alreadySelected:Boolean = (Settings["menuShape"+player] == shape);
+			
+			if (alreadySelected && (shape == "random" || shape == "O")) {
+				return;
+			}
+			
+			if (alreadySelected && shape != "random") {
 				rotations[shape+player] += 1;
 				makeImage();
 			}
