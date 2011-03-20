@@ -113,7 +113,7 @@ package
 					controls1.normalGraphic = computerNormal;
 					controls1.hoverGraphic = computerHover;
 					
-					Settings.classP1 = DefensiveAI;
+					Settings.classP1 = Settings.classAI;
 				} else {
 					controls1.normalGraphic = humanNormal;
 					controls1.hoverGraphic = humanHover;
@@ -135,7 +135,7 @@ package
 					controls2.normalGraphic = computerNormal;
 					controls2.hoverGraphic = computerHover;
 					
-					Settings.classP2 = DefensiveAI;
+					Settings.classP2 = Settings.classAI;
 				} else {
 					controls2.normalGraphic = humanNormal;
 					controls2.hoverGraphic = humanHover;
