@@ -351,7 +351,7 @@ package
 			}
 			
 			FP.alarm(15, function ():void {
-				FP.tween(cover, {alpha: 1}, 60, {complete:f});
+				FP.tween(cover, {alpha: 1}, 30, {complete:f});
 			});
 		}
 		
