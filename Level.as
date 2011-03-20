@@ -363,6 +363,7 @@ package
 		public override function begin ():void
 		{
 			Input.mouseCursor = "hide";
+			Audio.startMusic();
 		}
 		
 		public override function end ():void

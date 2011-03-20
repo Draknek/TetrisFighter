@@ -6,7 +6,7 @@ package
 	import flash.ui.ContextMenu;
 	import flash.ui.ContextMenuItem;
 	import net.flashpunk.utils.Key;
-	import net.flashpunk.Sfx;
+	import net.flashpunk.*;
 	
 	public class Audio
 	{
@@ -18,6 +18,12 @@ package
 		
 		[Embed(source="audio/blip2.mp3")]
 		public static var Hit2Sfx:Class;
+		
+		[Embed(source="audio/music.mp3")]
+		public static var MusicSfx:Class;
+		
+		private static var music:Sfx;
+		private static var musicTween:Tween;
 		
 		private static var sounds:Object = {};
 		
@@ -41,12 +47,36 @@ package
 				o.addEventListener(Event.ADDED_TO_STAGE, stageAdd);
 			}
 			
-			// Create sounds Hit3Sfx, Hit4Sfx
+			// Create sounds
+			
+			music = new Sfx(MusicSfx);
 			
 			sounds["death"] = new Sfx(DeathSfx);
 			sounds["hit"] = new Sfx(Hit2Sfx);
 			sounds["block"] = new Sfx(HitSfx);
 			//sounds["hit"] = new RandomSfx([HitSfx, Hit2Sfx]);
+		}
+		
+		public static function startMusic ():void
+		{
+			if (_mute) return;
+			
+			if (musicTween) {
+				musicTween.cancel();
+			}
+			
+			if (! music.playing || musicTween) {
+				music.loop();
+			}
+			
+			musicTween = null;
+		}
+		
+		public static function stopMusic ():void
+		{
+			if (_mute || ! music) return;
+			
+			musicTween = FP.tween(music, {volume: 0}, 240);
 		}
 		
 		public static function play (sound:String):void

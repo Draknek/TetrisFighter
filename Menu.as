@@ -282,6 +282,11 @@ package
 		{
 			super.render();
 		}
+		
+		public override function begin ():void
+		{
+			Audio.stopMusic();
+		}
 	}
 }
 
