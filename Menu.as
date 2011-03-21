@@ -6,6 +6,7 @@ package
 	import net.flashpunk.utils.*;
 	
 	import flash.display.*;
+	import flash.text.*;
 	
 	public class Menu extends World
 	{
@@ -28,61 +29,46 @@ package
 		
 		public var x1:int = 32+padding2;
 		public var x2:int = 640 - 32 - padding2 - size2;
-		public var yBlock:int = 96;
+		public var yBlock:int = 100;
 		public var yText:int = 96;
 		
 		public var fightButton:Button;
 		
+		public var credits:Sprite = new Sprite;
+		
 		public function Menu ()
 		{
+			var css:String = 'a:hover { text-decoration: underline; } \
+					a { text-decoration: none; color: #FF8B60; }';
+			
+			var alan:TextField = makeHTMLText(
+				'Established by <a href="http://www.draknek.org/" target="_blank">Alan Hazelden</a>',
+				15, 0xFFFFFF, css
+			);
+			
+			var paul:TextField = makeHTMLText(
+				'Musical accompaniment by <a href="http://runtime-audio.co.uk/" target="_blank">Paul Forey</a>',
+				15, 0xFFFFFF, css
+			);
+			
+			credits.addChild(alan);
+			credits.addChild(paul);
+			
+			alan.x = 320 - alan.width*0.5;
+			paul.x = 320 - paul.width*0.5;
+			
+			paul.y = 15;
+			
+			credits.y = 60;
+			
 			addGraphic(new Stamp(BgGfx));
 			
-			/*var onePlayer:Button = makeButton("One player", function():void{
-				Settings.chargeJump = false;
-				Settings.classP1 = HumanPlayer;
-				Settings.classP2 = DefensiveAI;
-				Settings.shapeP1 = "random";
-				Settings.shapeP2 = "random";
-				FP.world = new Level(true);
-			});
+			var title:Text = new Text("TETRIS FIGHT CLUB", 0, 0, {size: 40});
 			
-			var twoPlayer:Button = makeButton("Two player", function():void{
-				Settings.chargeJump = false;
-				Settings.classP1 = HumanPlayer;
-				Settings.classP2 = HumanPlayer;
-				Settings.shapeP1 = "random";
-				Settings.shapeP2 = "random";
-				FP.world = new Level(true);
-			});
+			title.x = 320 - title.width*0.5;
+			title.y = 16;
 			
-			var onePlayerOld:Button = makeButton("One player", function():void{
-				Settings.chargeJump = true;
-				Settings.classP1 = HumanPlayer;
-				Settings.classP2 = OppositeAI;
-				FP.world = new Level(true);
-			});
-			
-			var twoPlayerOld:Button = makeButton("Two player", function():void{
-				Settings.chargeJump = true;
-				Settings.classP1 = HumanPlayer;
-				Settings.classP2 = HumanPlayer;
-				FP.world = new Level(true);
-			});
-			
-			onePlayer.y = 130;
-			twoPlayer.y = 180;
-			onePlayerOld.y = 300;
-			twoPlayerOld.y = 350;
-			
-			add(onePlayer);
-			add(twoPlayer);
-			add(onePlayerOld);
-			add(twoPlayerOld);
-			
-			addGraphic(new Text("New", 0, 0, {size: 30, width: 640, align: "center"}), 0, 0, 90);
-			addGraphic(new Text("Old (charge jump)", 0, 0, {size: 30, width: 640, align: "center"}), 0, 0, 260);
-			
-			return;*/
+			addGraphic(title);
 			
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x1, yBlock);
 			addGraphic(new Stamp(Main.makeBlock(size2, size2)), 0, x2, yBlock);
@@ -173,12 +159,12 @@ package
 			
 			add(fightButton);
 			
-			addGraphic(new Stamp(Player.LifeGfx), 0, 64, 480 - 128);
-			addGraphic(new Stamp(Player.LifeGfx), 0, 640-96, 480 - 128);
+			var lifeG1:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, 64, 480 - 128);
+			var lifeG2:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, 640-96, 480 - 128);
 			
-			var lives1:Text = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, 96, 480-128+6, {size:20, color:0xFFFFFF});
+			var lives1:Text = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, 96, 480-128+5, {size:20, color:0xFFFFFF});
 			
-			var lives2:Text = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", 640-100-96-1, 480-128+6, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			var lives2:Text = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
 			
 			addGraphic(lives1);
 			addGraphic(lives2);
@@ -222,6 +208,19 @@ package
 			add(upB2);
 			add(downB1);
 			add(downB2);
+			
+			var offset:Number = yBlock + size2 + (480 - 96 - yBlock - size2)*0.5 - lifeG1.y;
+			
+			lifeG1.y += offset;
+			lifeG2.y += offset;
+			
+			lives1.y += offset;
+			lives2.y += offset;
+			
+			upB1.y += offset;
+			upB2.y += offset;
+			downB1.y += offset;
+			downB2.y += offset;
 		}
 		
 		private function makeShape(shape:String, i:int, j:int):void
@@ -286,6 +285,38 @@ package
 		public override function begin ():void
 		{
 			Audio.stopMusic();
+			
+			FP.engine.addChild(credits);
+		}
+		
+		public override function end ():void
+		{
+			FP.engine.removeChild(credits);
+		}
+		
+		public static function makeHTMLText (html:String, size:Number, color:uint, css:String): TextField
+		{
+			var ss:StyleSheet = new StyleSheet();
+			ss.parseCSS(css);
+			
+			var textField:TextField = new TextField;
+			
+			textField.selectable = false;
+			textField.mouseEnabled = true;
+			
+			textField.embedFonts = true;
+			
+			textField.autoSize = "center";
+			
+			textField.textColor = color;
+			
+			textField.defaultTextFormat = new TextFormat("modenine", size);
+			
+			textField.htmlText = html;
+			
+			textField.styleSheet = ss;
+			
+			return textField;
 		}
 	}
 }
