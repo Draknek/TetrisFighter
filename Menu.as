@@ -38,17 +38,19 @@ package
 		
 		public function Menu ()
 		{
-			var css:String = 'a:hover { text-decoration: underline; } \
-					a { text-decoration: none; color: #FF8B60; }';
+			var css1:String = 'a:hover { text-decoration: underline; } \
+					a { text-decoration: none; color: #FFFF00; }';
+			var css2:String = 'a:hover { text-decoration: underline; } \
+					a { text-decoration: none; color: #FF00FF; }';
 			
 			var alan:TextField = makeHTMLText(
 				'Established by <a href="http://www.draknek.org/" target="_blank">Alan Hazelden</a>',
-				15, 0xFFFFFF, css
+				15, 0xFFFFFF, css1
 			);
 			
 			var paul:TextField = makeHTMLText(
-				'Musical accompaniment by <a href="http://runtime-audio.co.uk/" target="_blank">Paul Forey</a>',
-				15, 0xFFFFFF, css
+				'Musically enlivened by <a href="http://runtime-audio.co.uk/" target="_blank">Paul Forey</a>',
+				15, 0xFFFFFF, css2
 			);
 			
 			credits.addChild(alan);
@@ -57,6 +59,7 @@ package
 			alan.x = 320 - alan.width*0.5;
 			paul.x = 320 - paul.width*0.5;
 			
+			alan.y = -2;
 			paul.y = 15;
 			
 			credits.y = 60;
@@ -66,7 +69,7 @@ package
 			var title:Text = new Text("TETRIS FIGHT CLUB", 0, 0, {size: 40});
 			
 			title.x = 320 - title.width*0.5;
-			title.y = 16;
+			title.y = 14;
 			
 			addGraphic(title);
 			
