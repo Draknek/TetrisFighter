@@ -6,16 +6,27 @@ package
 	import flash.display.*;
 	import flash.geom.*;
 	
+	import flash.display.StageDisplayState;
+	
 	[SWF(width = "640", height = "480", backgroundColor="#000000")]
 	public class Main extends Engine
 	{
+		public static var host:String;
+		
 		public function Main () 
 		{
-			super(640, 480, 60, true);
+			var w:int = 640;
+			var h:int = 480;
+			
+			if (Settings.arcade) {
+				w = 1024;
+				h = 768;
+			}
+			
+			super(w, h, 60, true);
 			
 			Text.font = "modenine";
 			
-			FP.world = new Menu;
 			//FP.world = new Level(true);
 			//FP.console.enable();
 		}
@@ -24,9 +35,26 @@ package
 		{
 			sitelock("draknek.org");
 			
+			Settings.init();
+			
+			if (Settings.arcade) {
+				FP.stage.displayState = StageDisplayState.FULL_SCREEN;
+				
+				FP.screen.x = (FP.stage.stageWidth - FP.width) * 0.5;
+			}
+			
+			FP.world = new Menu;
+			
 			Audio.init(this);
 			
 			super.init();
+		}
+		
+		public override function focusLost():void
+		{
+			if (Settings.arcade) {
+				FP.focused = true;
+			}
 		}
 		
 		public function sitelock (allowed:*):Boolean
@@ -37,7 +65,7 @@ package
 			if (url.substr(0, startCheck) == 'file://') return true;
 			
 			var domainLen:int = url.indexOf('/', startCheck) - startCheck;
-			var host:String = url.substr(startCheck, domainLen);
+			host = url.substr(startCheck, domainLen);
 			
 			if (allowed is String) allowed = [allowed];
 			for each (var d:String in allowed)

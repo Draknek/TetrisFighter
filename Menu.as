@@ -10,7 +10,6 @@ package
 	
 	public class Menu extends World
 	{
-		[Embed(source="images/menu.png")] public static const BgGfx: Class;
 		[Embed(source="block-small.png")] public static const SmallBlockGfx: Class;
 		[Embed(source="random.png")] public static const RandomGfx: Class;
 		[Embed(source="images/arrows.png")] public static const ArrowGfx: Class;
@@ -56,15 +55,19 @@ package
 			credits.addChild(alan);
 			credits.addChild(paul);
 			
-			alan.x = 320 - alan.width*0.5;
-			paul.x = 320 - paul.width*0.5;
+			alan.x = (FP.width - alan.width)*0.5;
+			paul.x = (FP.width - paul.width)*0.5;
 			
 			alan.y = -2;
 			paul.y = 15;
 			
+			credits.x = FP.screen.x;
 			credits.y = 60;
 			
-			addGraphic(new Stamp(BgGfx));
+			addGraphic(Level.makeFloor());
+			
+			addGraphic(Level.makeWall(false, -1));
+			addGraphic(Level.makeWall(false, 1));
 			
 			var title:Text = new Text("TETRIS FIGHT CLUB", 0, 0, {size: 40});
 			

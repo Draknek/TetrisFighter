@@ -9,8 +9,6 @@ package
 	
 	public class Level extends World
 	{
-		//[Embed(source="images/bg.png")] public static const BgGfx: Class;
-		
 		public var p1:Player;
 		public var p2:Player;
 		
@@ -33,6 +31,57 @@ package
 		public var p1Controls:Text;
 		public var p2Controls:Text;
 		
+		private static var block:Image = new Image(Player.BlockGfx);
+		
+		public static function makeFloor():Stamp
+		{
+			var stamp:Stamp = new Stamp(new BitmapData(640-64, 64), 32, 480-64);
+			
+			var i:int;
+			
+			block.color = 0x00FF00;
+			
+			for (i = 0; i < 18; i++) {
+				FP.point.x = (i) * block.width;
+				FP.point.y = 0;
+				block.render(stamp.source, FP.point, FP.zero);
+			}
+			
+			block.color = 0x00BB00;
+			
+			for (i = 0; i < 18; i++) {
+				FP.point.x = (i) * block.width;
+				FP.point.y = 32;
+				block.render(stamp.source, FP.point, FP.zero);
+			}
+			
+			return stamp;
+		}
+		
+		public static function makeWall(moving:Boolean, dx:int):Stamp
+		{
+			var sideHeight:int = FP.height + 64;
+			
+			if (moving) sideHeight *= 2;
+			
+			var stamp:Stamp = new Stamp(new BitmapData(32, sideHeight), 0, -64);
+			
+			if (dx > 0) stamp.x = 640 - stamp.width;
+			
+			var i:int;
+			
+			block.color = 0xFF0000;
+			
+			FP.point.x = 0;
+			FP.point.y = 0;
+			while (FP.point.y < sideHeight) {
+				block.render(stamp.source, FP.point, FP.zero);
+				FP.point.y += 32;
+			}
+			
+			return stamp;
+		}
+		
 		public function Level (_doIntro:Boolean = false)
 		{
 			this.doIntro = _doIntro;
@@ -53,44 +102,13 @@ package
 			p1.enemy = p2;
 			p2.enemy = p1;
 			
-			var block:Image = new Image(Player.BlockGfx);
-			
 			block.color = 0x00FF00;
 			
-			var sideHeight:int = 480+64;
-			if (Settings.movingSides) sideHeight *= 2;
+			addGraphic(makeFloor());
 			
-			var stamp:Stamp = new Stamp(new BitmapData(640-64, 64), 32, 480-64);
-			left = new Stamp(new BitmapData(32, sideHeight), 0, -64);
-			right = new Stamp(new BitmapData(32, sideHeight), 640-32, -64);
+			left = makeWall(Settings.movingSides, -1);
+			right = makeWall(Settings.movingSides, 1);
 			
-			var i:int;
-			
-			for (i = 0; i < 18; i++) {
-				FP.point.x = (i) * block.width;
-				FP.point.y = 0;
-				block.render(stamp.source, FP.point, FP.zero);
-			}
-			
-			block.color = 0x00BB00;
-			
-			for (i = 0; i < 18; i++) {
-				FP.point.x = (i) * block.width;
-				FP.point.y = 32;
-				block.render(stamp.source, FP.point, FP.zero);
-			}
-			
-			block.color = 0xFF0000;
-			
-			FP.point.x = 0;
-			FP.point.y = 0;
-			while (FP.point.y < sideHeight) {
-				block.render(left.source, FP.point, FP.zero);
-				block.render(right.source, FP.point, FP.zero);
-				FP.point.y += 32;
-			}
-			
-			addGraphic(stamp);
 			addGraphic(left);
 			addGraphic(right);
 			

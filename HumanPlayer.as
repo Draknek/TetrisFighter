@@ -4,30 +4,24 @@ package
 	
 	public class HumanPlayer extends Player
 	{
-		public var attackKey:uint;
-		public var blockKey:uint;
-		public var jumpKey:uint;
+		public var playerID:int;
 		
 		public function HumanPlayer (_dir:int, _shape:String, _rotation:int = 0)
 		{
 			super(_dir, _shape, _rotation);
 			
 			if (dir > 0) {
-				attackKey = Key.D;
-				jumpKey = Key.S;
-				blockKey = Key.A;
+				playerID = 1;
 			} else {
-				attackKey = Key.J;
-				jumpKey = Key.K;
-				blockKey = Key.L;
+				playerID = 2;
 			}
 		}
 		
 		public override function decide ():void
 		{
-			var a:Boolean = Input.check(attackKey);
-			var b:Boolean = Input.check(blockKey);
-			var c:Boolean = Input.check(jumpKey);
+			var a:Boolean = Input.check("attack" + playerID);
+			var b:Boolean = Input.check("block" + playerID);
+			var c:Boolean = Input.check("jump" + playerID);
 			
 			if (int(a) + int(b) + int(c) > 1) {
 				action = null;
