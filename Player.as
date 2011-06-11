@@ -81,9 +81,16 @@ package
 			
 			var outlinePoints:Array = new Outline(shapeBitmap).points;
 			var outlineBitmap:BitmapData = new BitmapData(image.width, image.height, true, 0x0);
+			FP.rect.width = 3;
+			FP.rect.height = 3;
 			for each (var p:Point in outlinePoints) {
-				outlineBitmap.setPixel32(p.x, p.y, 0xFFFFFFFF);
+				FP.rect.x = p.x - 1;
+				FP.rect.y = p.y - 1;
+				outlineBitmap.fillRect(FP.rect, 0xFFFFFFFF);
+				//outlineBitmap.setPixel32(p.x, p.y, 0xFFFFFFFF);
 			}
+			
+			outlineBitmap.threshold(shapeBitmap, shapeBitmap.rect, FP.zero, "==", 0x0, 0x0);
 			
 			outline = new Image(outlineBitmap);
 			outline.originX = image.width*0.5;
