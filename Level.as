@@ -35,13 +35,20 @@ package
 		
 		public static function makeFloor():Stamp
 		{
-			var stamp:Stamp = new Stamp(new BitmapData(640-64, 64), 32, 480-64);
+			var h:int = 64;
+			
+			if (Settings.arcade) h = 128;
+			
+			var stamp:Stamp = new Stamp(new BitmapData(FP.width-64, h), 32, 0);
+			
+			stamp.y = FP.height - stamp.height;
 			
 			var i:int;
+			var count:int = stamp.width / block.width;
 			
 			block.color = 0x00FF00;
 			
-			for (i = 0; i < 18; i++) {
+			for (i = 0; i < count; i++) {
 				FP.point.x = (i) * block.width;
 				FP.point.y = 0;
 				block.render(stamp.source, FP.point, FP.zero);
@@ -49,9 +56,25 @@ package
 			
 			block.color = 0x00BB00;
 			
-			for (i = 0; i < 18; i++) {
+			for (i = 0; i < count; i++) {
 				FP.point.x = (i) * block.width;
 				FP.point.y = 32;
+				block.render(stamp.source, FP.point, FP.zero);
+			}
+			
+			block.color = 0x007700;
+			
+			for (i = 0; i < count; i++) {
+				FP.point.x = (i) * block.width;
+				FP.point.y = 64;
+				block.render(stamp.source, FP.point, FP.zero);
+			}
+			
+			block.color = 0x004400;
+			
+			for (i = 0; i < count; i++) {
+				FP.point.x = (i) * block.width;
+				FP.point.y = 96;
 				block.render(stamp.source, FP.point, FP.zero);
 			}
 			
@@ -66,7 +89,7 @@ package
 			
 			var stamp:Stamp = new Stamp(new BitmapData(32, sideHeight), 0, -64);
 			
-			if (dx > 0) stamp.x = 640 - stamp.width;
+			if (dx > 0) stamp.x = FP.width - stamp.width;
 			
 			var i:int;
 			
@@ -115,11 +138,19 @@ package
 			p1.makeHole(left.source);
 			p2.makeHole(right.source);
 			
-			p1Intro = new Text("Yellow\n" + Settings.shapeP1 + "-Block", 180, 160, {size: 30, align:"center"});
-			p2Intro = new Text("Purple\n" + Settings.shapeP2 + "-Block", 460, 160, {size: 30, align:"center"});
-			vs = new Text("VS", 320, 160, {size:90});
+			var vsSize:int = Settings.arcade ? 150 : 90;
+			var introSize:int = Settings.arcade ? 60 : 30;
+			
+			p1Intro = new Text("Yellow\n" + Settings.shapeP1 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
+			p2Intro = new Text("Purple\n" + Settings.shapeP2 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
+			vs = new Text("VS", FP.width*0.5, 160, {size: vsSize});
 			p1Controls = new Text("Attack: D\nJump: " + (Settings.chargeJump ? "Hold " : "") + "S\nBlock: A", 180, 240, {align:"center",size:15});
 			p2Controls = new Text("Attack: J\nJump: " + (Settings.chargeJump ? "Hold " : "") + "K\nBlock: L", 460, 240, {align:"center",size:15});
+			
+			var introOffset:int = Settings.arcade ? (vs.width + p1Intro.width)*0.5 + 30 : 140;
+			
+			p1Intro.x -= introOffset;
+			p2Intro.x += introOffset;
 			
 			p1Intro.centerOO();
 			p2Intro.centerOO();
@@ -135,8 +166,11 @@ package
 			addGraphic(p1Intro, -10);
 			addGraphic(p2Intro, -10);
 			addGraphic(vs, -10);
-			if (Settings.classP1 == HumanPlayer) addGraphic(p1Controls, -10);
-			if (Settings.classP2 == HumanPlayer) addGraphic(p2Controls, -10);
+			
+			if (! Settings.arcade) {
+				if (Settings.classP1 == HumanPlayer) addGraphic(p1Controls, -10);
+				if (Settings.classP2 == HumanPlayer) addGraphic(p2Controls, -10);
+			}
 			
 			if (doIntro) {
 				livesP1 = Settings.livesP1;
@@ -146,8 +180,8 @@ package
 				
 				var delay:int = 25;
 			
-				p1Intro.x -= 300;
-				p2Intro.x += 300;
+				p1Intro.x -= FP.width*0.5 + 120;
+				p2Intro.x += FP.width*0.5 + 120;
 				vs.y -= 300;
 				p1.y = -96;
 				p2.y = -96;
@@ -156,15 +190,18 @@ package
 				p2Controls.alpha = 0;
 			
 				var world:World = this;
-			
-				FP.alarm(1      , function ():void {FP.tween(p1Intro, {x:180}, delay)});
+				
+				FP.alarm(1      , function ():void {FP.tween(p1Intro, {x:FP.width*0.5-introOffset}, delay)});
 				FP.alarm(delay  , function ():void {FP.tween(vs, {y: 160}, delay)});
-				FP.alarm(delay*2, function ():void {FP.tween(p2Intro, {x:460}, delay)});
+				FP.alarm(delay*2, function ():void {FP.tween(p2Intro, {x:FP.width*0.5+introOffset}, delay)});
 				FP.alarm(delay*3, function ():void {FP.tween(p1, {y:p1.floorY}, delay, {tweener:FP.tweener})});
 				FP.alarm(delay*3, function ():void {FP.tween(p2, {y:p2.floorY}, delay, {tweener:FP.tweener})});
 				FP.alarm(delay*4, function ():void {Audio.play("hit");paused = false; doIntro = false; shake = 8; FP.tween(world, {shake: 0}, delay*0.5)});
-				FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p1Controls, {alpha: 1}, delay*0.5)});
-				FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p2Controls, {alpha: 1}, delay*0.5)});
+				
+				if (! Settings.arcade) {
+					FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p1Controls, {alpha: 1}, delay*0.5)});
+					FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p2Controls, {alpha: 1}, delay*0.5)});
+				}
 			}
 		}
 		
@@ -275,7 +312,7 @@ package
 			
 			loser.dead = true;
 			
-			var x:Number = (side < 0) ? 0 : 640-32;
+			var x:Number = (side < 0) ? 0 : FP.width-32;
 			
 			var cover:Image = Image.createRect(32, FP.height, FP.screen.color);
 			var e:Entity = addGraphic(cover, -20, x, 0);
@@ -327,12 +364,12 @@ package
 					victorName.size = 30;
 					victorName.y += victorName.height*0.25;
 				
-					FP.tween(victorName, {size:60, x:320, y:120}, 30);
+					FP.tween(victorName, {size:60, x:FP.width*0.5, y:120}, 30);
 					
 					//Input.mouseCursor = "auto";
 				
 					FP.alarm(30, function ():void {
-						var wins:Text = new Text("WINS!", 320, 210, {size:50});
+						var wins:Text = new Text("WINS!", FP.width*0.5, 210, {size:50});
 					
 						wins.centerOO();
 						wins.alpha = 0;

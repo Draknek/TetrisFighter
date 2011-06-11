@@ -41,7 +41,7 @@ package
 		public var vx:Number = 0;
 		public var vy:Number = 0;
 		
-		public var floorY:Number = 480 - 64;
+		public var floorY:Number = FP.height - (Settings.arcade ? 128 : 64);
 		public var gravity:Number = 0.1;
 		
 		public var image:Image;
@@ -99,7 +99,7 @@ package
 			type = "player";
 			
 			y = floorY;
-			x = spawn = 320 - dir*(640 - 64*8);
+			x = spawn = FP.width*0.5 - dir*(640 - 64*8);
 			
 			layer = -11;
 		}
@@ -262,12 +262,10 @@ package
 			var lives:int = (Level(world).p1 == this) ? Level.livesP1 : Level.livesP2;
 			
 			for (var i:int = 0; i < lives; i++) {
-				FP.point.x = 320 - (320 - 32 - 16 - int(i/10)*32)*dir;
+				FP.point.x = FP.width*0.5 - (FP.width*0.5 - 32 - 16 - int(i/10)*32)*dir;
 				FP.point.y = 16 + (i%10)*32;
 				lifeImage.render(FP.buffer, FP.point, FP.camera);
 			}
-			
-			
 			
 			var t:Number = jumpTimer / maxJumpTimer;
 		
@@ -294,7 +292,9 @@ package
 			var cover:BitmapData = new BitmapData(alpha.width, alpha.height, false, FP.screen.color);
 			
 			FP.point.x = (dir > 0) ? 0 : 32 - alpha.width;
-			FP.point.y = 480 - alpha.height;
+			FP.point.y = FP.height - alpha.height;
+			
+			if (Settings.arcade) FP.point.y -= 64;
 			
 			b.copyPixels(cover, cover.rect, FP.point, alpha, FP.zero, true);
 		}

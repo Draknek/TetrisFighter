@@ -24,10 +24,10 @@ package
 		public var size1:int = 64+padding1;
 		public var size2:int = size1*3+paddingA*2+paddingB*2;
 		
-		public var padding2:int = (640 - 64 - size2*2)/3;
+		public var padding2:int = (FP.width - 64 - size2*2)/3;
 		
 		public var x1:int = 32+padding2;
-		public var x2:int = 640 - 32 - padding2 - size2;
+		public var x2:int = FP.width - 32 - padding2 - size2;
 		public var yBlock:int = 100;
 		public var yText:int = 96;
 		
@@ -42,14 +42,16 @@ package
 			var css2:String = 'a:hover { text-decoration: underline; } \
 					a { text-decoration: none; color: #FF00FF; }';
 			
+			var scale:int = Settings.arcade ? 2 : 1;
+			
 			var alan:TextField = makeHTMLText(
 				'Established by <a href="http://www.draknek.org/" target="_blank">Alan Hazelden</a>',
-				15, 0xFFFFFF, css1
+				Settings.arcade ? 20 : 15, 0xFFFFFF, css1
 			);
 			
 			var paul:TextField = makeHTMLText(
 				'Musically enlivened by <a href="http://runtime-audio.co.uk/" target="_blank">Paul Forey</a>',
-				15, 0xFFFFFF, css2
+				Settings.arcade ? 20 : 15, 0xFFFFFF, css2
 			);
 			
 			credits.addChild(alan);
@@ -59,19 +61,23 @@ package
 			paul.x = (FP.width - paul.width)*0.5;
 			
 			alan.y = -2;
-			paul.y = 15;
+			paul.y = 15*scale;
 			
 			credits.x = FP.screen.x;
-			credits.y = 60;
+			credits.y = 60*scale;
+			
+			if (Settings.arcade) {
+				yBlock = 240;
+			}
 			
 			addGraphic(Level.makeFloor());
 			
 			addGraphic(Level.makeWall(false, -1));
 			addGraphic(Level.makeWall(false, 1));
 			
-			var title:Text = new Text("TETRIS FIGHT CLUB", 0, 0, {size: 40});
+			var title:Text = new Text("TETRIS FIGHT CLUB", 0, 0, {size: 40*scale});
 			
-			title.x = 320 - title.width*0.5;
+			title.x = (FP.width - title.width)*0.5;
 			title.y = 14;
 			
 			addGraphic(title);
@@ -159,18 +165,20 @@ package
 				Audio.play("hit");
 			});
 			
-			fightButton.y = (yBlock + size2 + 480 - 64 - fightButton.height)*0.5;
+			fightButton.y = (yBlock + size2 + FP.height - 64*scale - fightButton.height)*0.5;
 			
 			fightButton.visible = false;
 			
 			add(fightButton);
 			
-			var lifeG1:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, 64, 480 - 128);
-			var lifeG2:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, 640-96, 480 - 128);
+			var offsetX:int = (FP.width - 640) * 0.5;
 			
-			var lives1:Text = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, 96, 480-128+5, {size:20, color:0xFFFFFF});
+			var lifeG1:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, offsetX + 64, 480 - 128);
+			var lifeG2:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, offsetX + 640-96, 480 - 128);
 			
-			var lives2:Text = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			var lives1:Text = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, offsetX + 96, 480-128+5, {size:20, color:0xFFFFFF});
+			
+			var lives2:Text = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", offsetX + 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
 			
 			addGraphic(lives1);
 			addGraphic(lives2);
@@ -186,25 +194,25 @@ package
 			up2.color = 0xFF0000;
 			down2.color = 0xFF0000;
 			
-			var upB1:Button = new Button(96+40, 480-128-2, up1, up2, function ():void {
+			var upB1:Button = new Button(offsetX + 96+40, 480-128-2, up1, up2, function ():void {
 				Settings.livesP1 += 1;
 				Settings.livesP1 = FP.clamp(Settings.livesP1, 0, 20);
 				lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
 			});
 			
-			var downB1:Button = new Button(96+40, 480-128-2+18, down1, down2, function ():void {
+			var downB1:Button = new Button(offsetX + 96+40, 480-128-2+18, down1, down2, function ():void {
 				Settings.livesP1 -= 1;
 				Settings.livesP1 = FP.clamp(Settings.livesP1, 0, 20);
 				lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
 			});
 			
-			var upB2:Button = new Button(640-96-40-17, 480-128-2, up1, up2, function ():void {
+			var upB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2, up1, up2, function ():void {
 				Settings.livesP2 += 1;
 				Settings.livesP2 = FP.clamp(Settings.livesP2, 0, 20);
 				lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x";
 			});
 			
-			var downB2:Button = new Button(640-96-40-17, 480-128-2+18, down1, down2, function ():void {
+			var downB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2+18, down1, down2, function ():void {
 				Settings.livesP2 -= 1;
 				Settings.livesP2 = FP.clamp(Settings.livesP2, 0, 20);
 				lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2 + "x";
@@ -215,7 +223,7 @@ package
 			add(downB1);
 			add(downB2);
 			
-			var offset:Number = yBlock + size2 + (480 - 96 - yBlock - size2)*0.5 - lifeG1.y;
+			var offset:Number = yBlock + size2 + (FP.height - 32 - 64*scale - yBlock - size2)*0.5 - lifeG1.y;
 			
 			lifeG1.y += offset;
 			lifeG2.y += offset;
@@ -262,7 +270,7 @@ package
 			
 			var fightButton:Button = new Button(0, 0, fightBG, fightBG2, callback);
 			
-			fightButton.x = 320 - fightButton.width*0.5;
+			fightButton.x = (FP.width - fightButton.width)*0.5;
 			
 			return fightButton;
 		}
