@@ -51,6 +51,8 @@ package
 		
 		public var lifeOffset:int = 16;
 		
+		private function dummyFunction ():void {}
+		
 		public function Menu ()
 		{
 			var css1:String = 'a:hover { text-decoration: underline; } \
@@ -105,8 +107,13 @@ package
 			var p2:Text = new Text("P2", 0, 0, {size:40, color:0x0});
 			p1.centerOO();
 			p2.centerOO();
-			addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5-5);
-			addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5-5);
+			
+			var pOffset:Number = -5;
+			
+			if (Settings.arcade) pOffset = 0;
+			
+			addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5 + pOffset);
+			addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5 + pOffset);
 			
 			var humanNormal:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5	, {size:20, color:0x0});
 			var humanHover:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0xFF0000});
@@ -143,8 +150,6 @@ package
 			controls1.width = size1;
 			controls1.height = size1;
 			
-			add(controls1);
-			
 			controls2 = new Button(x2+getDelta(1), yBlock+getDelta(1),
 				(Settings.classP2 == HumanPlayer) ? humanNormal : computerNormal,
 				(Settings.classP2 == HumanPlayer) ? humanHover : computerHover,
@@ -169,7 +174,10 @@ package
 			controls2.width = size1;
 			controls2.height = size1;
 			
-			add(controls2);
+			if (! Settings.arcade) {
+				add(controls1);
+				add(controls2);
+			}
 			
 			makeShape("J", 0, 0);
 			makeShape("T", 1, 0);
@@ -180,8 +188,8 @@ package
 			makeShape("I", 1, 2);
 			makeShape("S", 2, 2);
 			
-			selectedP1 = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P1", controls1.callback);
-			selectedP2 = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P2", controls2.callback);
+			selectedP1 = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P1", dummyFunction);
+			selectedP2 = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P2", dummyFunction);
 			
 			add(selectedP1);
 			add(selectedP2);
@@ -193,11 +201,11 @@ package
 			buttonsP2[3] = buttonsP2[5];
 			buttonsP2[5] = tmp;
 			
-			tmp = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1+8, null, "P1", function ():void{});
+			tmp = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1, null, "P1", dummyFunction);
 			add(tmp);
 			buttonsP1.push(tmp);
 			
-			tmp = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1+8, null, "P2", function ():void{});
+			tmp = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1, null, "P2", dummyFunction);
 			add(tmp);
 			buttonsP2.push(tmp);
 			
@@ -234,21 +242,25 @@ package
 			addGraphic(lifeG1);
 			addGraphic(lifeG2);
 			
-			lives1 = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, offsetX + 96, 480-128+5, {size:20, color:0xFFFFFF});
+			lives1 = new Text("x" + Settings.livesP1, offsetX + 96, 480-128+5, {size:20, color:0xFFFFFF});
 			
-			lives2 = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", offsetX + 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			lives2 = new Text(Settings.livesP2+"x", offsetX + 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			
+			updateLives();
 			
 			if (Settings.arcade) {
 				var w:Number = lifeG1.width + lives1.width;
 				
 				lifeG1.x = x1 + size2*0.5 - w*0.5 + 1;
-				lifeG2.x = x2 + size2*0.5 + w*0.5 - lifeG2.width - 1;
+				lifeG2.x = x2 + size2*0.5 - w*0.5 + 1;
 				
 				lifeG1.y = yBlock + getDelta(3, true) + lifeOffset - lifeG1.height*0.5;
 				lifeG2.y = yBlock + getDelta(3, true) + lifeOffset - lifeG2.height*0.5;
 				
 				lives1.x = lifeG1.x + lifeG1.width - 1;
-				lives2.x = lifeG2.x - lives2.width - 1;
+				lives2.x = lifeG2.x + lifeG2.width - 1;
+				
+				lives2.align = "left";
 				
 				lives1.y = yBlock + getDelta(3, true) + lifeOffset - lives1.height*0.5;
 				lives2.y = yBlock + getDelta(3, true) + lifeOffset - lives2.height*0.5;
@@ -311,11 +323,16 @@ package
 		
 		private function updateLives (): void
 		{
-			Settings.livesP1 = FP.clamp(Settings.livesP1, 1, 20);
-			lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
+			Settings.livesP1 = FP.clamp(Settings.livesP1, 1, 9);
+			lives1.text = "x" + Settings.livesP1;
 			
-			Settings.livesP2 = FP.clamp(Settings.livesP2, 1, 20);
-			lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2 + "x";
+			Settings.livesP2 = FP.clamp(Settings.livesP2, 1, 9);
+			
+			if (Settings.arcade) {
+				lives2.text = "x" + Settings.livesP2;
+			} else {
+				lives2.text = Settings.livesP2 + "x";
+			}
 		}
 		
 		private function makeShape(shape:String, i:int, j:int):void
@@ -436,12 +453,12 @@ package
 					return;
 				}
 				
-				if (Settings.classP1 != HumanPlayer) {
+				/*if (Settings.classP1 != HumanPlayer) {
 					controls1.callback();
 				}
 				if (Settings.classP2 == HumanPlayer) {
 					controls2.callback();
-				}
+				}*/
 			}
 			
 			if (Input.pressed("2playermode")) {
@@ -450,12 +467,12 @@ package
 					return;
 				}
 				
-				if (Settings.classP1 != HumanPlayer) {
+				/*if (Settings.classP1 != HumanPlayer) {
 					controls1.callback();
 				}
 				if (Settings.classP2 != HumanPlayer) {
 					controls2.callback();
-				}
+				}*/
 			}
 		}
 		

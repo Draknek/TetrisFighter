@@ -142,17 +142,28 @@ package
 			
 			var vsSize:int = Settings.arcade ? 150 : 90;
 			var introSize:int = Settings.arcade ? 60 : 30;
+			var controlsSize:int = Settings.arcade ? 20 : 15;
 			
 			p1Intro = new Text("Yellow\n" + Settings.shapeP1 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
 			p2Intro = new Text("Purple\n" + Settings.shapeP2 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
 			vs = new Text("VS", FP.width*0.5, 160, {size: vsSize});
-			p1Controls = new Text("Attack: D\nJump: " + (Settings.chargeJump ? "Hold " : "") + "S\nBlock: A", 180, 240, {align:"center",size:15});
-			p2Controls = new Text("Attack: J\nJump: " + (Settings.chargeJump ? "Hold " : "") + "K\nBlock: L", 460, 240, {align:"center",size:15});
+			p1Controls = new Text("Attack: D\n  Jump: " + (Settings.chargeJump ? "Hold " : "") + "S\n Block: A", FP.width*0.5, 240, {size:controlsSize});
+			p2Controls = new Text("Attack: J\n  Jump: " + (Settings.chargeJump ? "Hold " : "") + "K\n Block: L", FP.width*0.5, 240, {size:controlsSize});
+			
+			if (Settings.arcade) {
+				p1Controls.text = "Attack: RIGHT\n  Jump: UP\n Block: LEFT";
+				p2Controls.text = "Attack: LEFT\n  Jump: UP\n Block: RIGHT";
+				
+				p1Controls.y += 150;
+				p2Controls.y += 150;
+			}
 			
 			var introOffset:int = Settings.arcade ? (vs.width + p1Intro.width)*0.5 + 30 : 140;
 			
 			p1Intro.x -= introOffset;
 			p2Intro.x += introOffset;
+			p1Controls.x -= introOffset;
+			p2Controls.x += introOffset;
 			
 			p1Intro.centerOO();
 			p2Intro.centerOO();
@@ -169,10 +180,8 @@ package
 			addGraphic(p2Intro, -10);
 			addGraphic(vs, -10);
 			
-			if (! Settings.arcade) {
-				if (Settings.classP1 == HumanPlayer) addGraphic(p1Controls, -10);
-				if (Settings.classP2 == HumanPlayer) addGraphic(p2Controls, -10);
-			}
+			if (Settings.classP1 == HumanPlayer) addGraphic(p1Controls, -10);
+			if (Settings.classP2 == HumanPlayer) addGraphic(p2Controls, -10);
 			
 			if (doIntro) {
 				livesP1 = Settings.livesP1;
@@ -200,10 +209,8 @@ package
 				FP.alarm(delay*3, function ():void {FP.tween(p2, {y:p2.floorY}, delay, {tweener:FP.tweener})});
 				FP.alarm(delay*4, function ():void {Audio.play("hit");paused = false; doIntro = false; shake = 8; FP.tween(world, {shake: 0}, delay*0.5)});
 				
-				if (! Settings.arcade) {
-					FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p1Controls, {alpha: 1}, delay*0.5)});
-					FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p2Controls, {alpha: 1}, delay*0.5)});
-				}
+				FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p1Controls, {alpha: 1}, delay*0.5)});
+				FP.alarm(delay*4, function ():void {shake = 8; FP.tween(p2Controls, {alpha: 1}, delay*0.5)});
 			}
 		}
 		
