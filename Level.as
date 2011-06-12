@@ -111,6 +111,14 @@ package
 		{
 			this.doIntro = _doIntro;
 			
+			if (! Settings.shapeP1) {
+				Settings.shapeP1 = "random";
+			}
+			
+			if (! Settings.shapeP2) {
+				Settings.shapeP2 = "random";
+			}
+			
 			if (Settings.shapeP1 == "random") {
 				Settings.shapeP1 = FP.choose(Main.SHAPES);
 				Settings.rotationP1 = FP.rand(4);
@@ -343,6 +351,8 @@ package
 			
 			var f:Function;
 			
+			var w:World = this;
+			
 			if (livesP1 > 0 && livesP2 > 0) {
 				f = function ():void {
 					var newBlocks:Stamp = (side < 0) ? left : right;
@@ -386,7 +396,7 @@ package
 					FP.tween(victorName, {size:60, x:FP.width*0.5, y:120}, 30);
 					
 					//Input.mouseCursor = "auto";
-				
+					
 					FP.alarm(30, function ():void {
 						var wins:Text = new Text("WINS!", FP.width*0.5, 210, {size:50});
 					
@@ -423,12 +433,12 @@ package
 							
 							function goOn():void {
 								pressButton.alpha = 1;
-								FP.alarm(30, goOff);
+								FP.alarm(30, goOff, Tween.ONESHOT, w);
 							}
 							
 							function goOff():void {
 								pressButton.alpha = 0;
-								FP.alarm(30, goOn);
+								FP.alarm(30, goOn, Tween.ONESHOT, w);
 							}
 							
 							buttonPressQuit = true;
