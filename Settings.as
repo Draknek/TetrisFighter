@@ -5,8 +5,8 @@ package
 	
 	public class Settings
 	{
-		public static var livesP1:int = 5;
-		public static var livesP2:int = 5;
+		public static var livesP1:int = 3;
+		public static var livesP2:int = 3;
 		
 		public static var classAI:Class = DefensiveAI;
 		
@@ -30,7 +30,7 @@ package
 		public static var chargeJump:Boolean = false;
 		
 		public static var arcade:Boolean = true;
-		public static var arcadeControls:Boolean = false;
+		public static var arcadeControls:Boolean = true;
 		
 		public static function init ():void
 		{

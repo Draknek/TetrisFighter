@@ -46,6 +46,11 @@ package
 		public var buttonsP1:Array = [];
 		public var buttonsP2:Array = [];
 		
+		public var lives1:Text;
+		public var lives2:Text;
+		
+		public var lifeOffset:int = 16;
+		
 		public function Menu ()
 		{
 			var css1:String = 'a:hover { text-decoration: underline; } \
@@ -188,6 +193,14 @@ package
 			buttonsP2[3] = buttonsP2[5];
 			buttonsP2[5] = tmp;
 			
+			tmp = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1+8, null, "P1", function ():void{});
+			add(tmp);
+			buttonsP1.push(tmp);
+			
+			tmp = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1+8, null, "P2", function ():void{});
+			add(tmp);
+			buttonsP2.push(tmp);
+			
 			fightButton = makeButton("FIGHT", function():void{
 				Settings.shapeP1 = Settings.menuShapeP1;
 				Settings.shapeP2 = Settings.menuShapeP2;
@@ -215,68 +228,94 @@ package
 			
 			var offsetX:int = (FP.width - 640) * 0.5;
 			
-			var lifeG1:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, offsetX + 64, 480 - 128);
-			var lifeG2:Entity = addGraphic(new Stamp(Player.LifeGfx), 0, offsetX + 640-96, 480 - 128);
+			var lifeG1:Stamp = new Stamp(Player.LifeGfx, offsetX + 64, 480 - 128);
+			var lifeG2:Stamp = new Stamp(Player.LifeGfx, offsetX + 640-96, 480 - 128);
 			
-			var lives1:Text = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, offsetX + 96, 480-128+5, {size:20, color:0xFFFFFF});
+			addGraphic(lifeG1);
+			addGraphic(lifeG2);
 			
-			var lives2:Text = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", offsetX + 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			lives1 = new Text("x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1, offsetX + 96, 480-128+5, {size:20, color:0xFFFFFF});
+			
+			lives2 = new Text((Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x", offsetX + 640-100-96-2, 480-128+5, {align:"right", width: 100, size:20, color:0xFFFFFF});
+			
+			if (Settings.arcade) {
+				var w:Number = lifeG1.width + lives1.width;
+				
+				lifeG1.x = x1 + size2*0.5 - w*0.5 + 1;
+				lifeG2.x = x2 + size2*0.5 + w*0.5 - lifeG2.width - 1;
+				
+				lifeG1.y = yBlock + getDelta(3, true) + lifeOffset - lifeG1.height*0.5;
+				lifeG2.y = yBlock + getDelta(3, true) + lifeOffset - lifeG2.height*0.5;
+				
+				lives1.x = lifeG1.x + lifeG1.width - 1;
+				lives2.x = lifeG2.x - lives2.width - 1;
+				
+				lives1.y = yBlock + getDelta(3, true) + lifeOffset - lives1.height*0.5;
+				lives2.y = yBlock + getDelta(3, true) + lifeOffset - lives2.height*0.5;
+			}
 			
 			addGraphic(lives1);
 			addGraphic(lives2);
 			
-			var up1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
-			var up2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
-			var down1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
-			var down2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+			if (! Settings.arcade) {
+				var up1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+				var up2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+				var down1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+				var down2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
 			
-			down1.frame = 1;
-			down2.frame = 1;
+				down1.frame = 1;
+				down2.frame = 1;
 			
-			up2.color = 0xFF0000;
-			down2.color = 0xFF0000;
+				up2.color = 0xFF0000;
+				down2.color = 0xFF0000;
 			
-			var upB1:Button = new Button(offsetX + 96+40, 480-128-2, up1, up2, function ():void {
-				Settings.livesP1 += 1;
-				Settings.livesP1 = FP.clamp(Settings.livesP1, 0, 20);
-				lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
-			});
+				var upB1:Button = new Button(offsetX + 96+40, 480-128-2, up1, up2, function ():void {
+					Settings.livesP1 += 1;
+					updateLives();
+				});
 			
-			var downB1:Button = new Button(offsetX + 96+40, 480-128-2+18, down1, down2, function ():void {
-				Settings.livesP1 -= 1;
-				Settings.livesP1 = FP.clamp(Settings.livesP1, 0, 20);
-				lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
-			});
+				var downB1:Button = new Button(offsetX + 96+40, 480-128-2+18, down1, down2, function ():void {
+					Settings.livesP1 -= 1;
+					updateLives();
+				});
 			
-			var upB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2, up1, up2, function ():void {
-				Settings.livesP2 += 1;
-				Settings.livesP2 = FP.clamp(Settings.livesP2, 0, 20);
-				lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2+"x";
-			});
+				var upB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2, up1, up2, function ():void {
+					Settings.livesP2 += 1;
+					updateLives();
+				});
 			
-			var downB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2+18, down1, down2, function ():void {
-				Settings.livesP2 -= 1;
-				Settings.livesP2 = FP.clamp(Settings.livesP2, 0, 20);
-				lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2 + "x";
-			});
+				var downB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2+18, down1, down2, function ():void {
+					Settings.livesP2 -= 1;
+					updateLives();
+				});
 			
-			add(upB1);
-			add(upB2);
-			add(downB1);
-			add(downB2);
+				add(upB1);
+				add(upB2);
+				add(downB1);
+				add(downB2);
 			
-			var offset:Number = yBlock + size2 + (FP.height - 32 - 64*scale - yBlock - size2)*0.5 - lifeG1.y;
+				var offset:Number = yBlock + size2 + (FP.height - 32 - 64*scale - yBlock - size2)*0.5 - lifeG1.y;
 			
-			lifeG1.y += offset;
-			lifeG2.y += offset;
+				lifeG1.y += offset;
+				lifeG2.y += offset;
 			
-			lives1.y += offset;
-			lives2.y += offset;
+				lives1.y += offset;
+				lives2.y += offset;
 			
-			upB1.y += offset;
-			upB2.y += offset;
-			downB1.y += offset;
-			downB2.y += offset;
+				upB1.y += offset;
+				upB2.y += offset;
+				downB1.y += offset;
+				downB2.y += offset;
+			}
+		}
+		
+		private function updateLives (): void
+		{
+			Settings.livesP1 = FP.clamp(Settings.livesP1, 1, 20);
+			lives1.text = "x" + (Settings.livesP1 < 10 ? "0":"") + Settings.livesP1;
+			
+			Settings.livesP2 = FP.clamp(Settings.livesP2, 1, 20);
+			lives2.text = (Settings.livesP2 < 10 ? "0":"") + Settings.livesP2 + "x";
 		}
 		
 		private function makeShape(shape:String, i:int, j:int):void
@@ -346,7 +385,15 @@ package
 					var index:int = array.indexOf(selected);
 					
 					if (index >= 9) {
-						// TODO: health
+						if (Input.pressed("left"+p)) {
+							Settings["lives"+p] -= 1;
+							updateLives();
+						} else if (Input.pressed("right"+p)) {
+							Settings["lives"+p] += 1;
+							updateLives();
+						} else if (Input.pressed("up"+p)) {
+							index = 7;
+						}
 					} else {
 						if (Input.pressed("left"+p) && (index % 3 != 0)) {
 							index -= 1;
@@ -354,8 +401,12 @@ package
 							index += 1;
 						} else if (Input.pressed("up"+p) && (index >= 3)) {
 							index -= 3;
-						} else if (Input.pressed("down"+p) && (index < 6)) {
-							index += 3;
+						} else if (Input.pressed("down"+p)) {
+							if (index < 6) {
+								index += 3;
+							} else {
+								index = 9;
+							}
 						}
 					}
 					
@@ -372,7 +423,7 @@ package
 						}
 						
 						fightText.text = "Press\n" + playerCount + " PLAYER SELECT\nto fight";
-						fightText.visible = ((BlockButton(selectedP1).timer % 120) < 60);
+						fightText.visible = ((buttonsP1[0].timer % 120) < 60);
 					}
 				} else {
 					fightButton.visible = true;

@@ -336,7 +336,7 @@ package
 			
 			var f:Function;
 			
-			if (livesP1 >= 0 && livesP2 >= 0) {
+			if (livesP1 > 0 && livesP2 > 0) {
 				f = function ():void {
 					var newBlocks:Stamp = (side < 0) ? left : right;
 					newBlocks.x = x + side*32;
