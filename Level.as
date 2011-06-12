@@ -31,6 +31,8 @@ package
 		public var p1Controls:Text;
 		public var p2Controls:Text;
 		
+		private var buttonPressQuit:Boolean;
+		
 		private static var block:Image = new Image(Player.BlockGfx);
 		
 		public static function makeFloor():Stamp
@@ -207,8 +209,18 @@ package
 		
 		public override function update (): void
 		{
-			if (paused && showCursor) {
+			if (paused && showCursor && ! Settings.arcade) {
 				Input.mouseCursor = "auto";
+			}
+			
+			if (buttonPressQuit && Input.pressed("anykey")) {
+				FP.world = new Menu;
+				return;
+			}
+			
+			if (Input.pressed("1playermode") || Input.pressed("2playermode")) {
+				FP.world = new Menu;
+				return;
 			}
 			
 			super.update(); // note: this doesn't do anything to players
@@ -392,13 +404,36 @@ package
 						Image(replay.graphic).alpha = 0;
 						Image(menu.graphic).alpha = 0;
 						
-						add(replay);
-						add(menu);
+						if (Settings.arcade) {
+							var pressButton:Text = new Text("Press any button", 0, 0, {size: 40});
+							
+							pressButton.centerOO();
+							pressButton.alpha = 0;
+							
+							addGraphic(pressButton, 0, FP.width*0.5, FP.height*0.5);
+							
+							goOff();
+							
+							function goOn():void {
+								pressButton.alpha = 1;
+								FP.alarm(30, goOff);
+							}
+							
+							function goOff():void {
+								pressButton.alpha = 0;
+								FP.alarm(30, goOn);
+							}
+							
+							buttonPressQuit = true;
+						} else {
+							add(replay);
+							add(menu);
 					
-						FP.tween(replay.graphic, {alpha:1}, 30);
-						FP.tween(menu.graphic, {alpha:1}, 30);
+							FP.tween(replay.graphic, {alpha:1}, 30);
+							FP.tween(menu.graphic, {alpha:1}, 30);
 						
-						showCursor = true;
+							showCursor = true;
+						}
 					});
 				
 					FP.tween(loser.image, {alpha: 0}, 60);

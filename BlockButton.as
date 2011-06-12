@@ -14,10 +14,11 @@ package
 		public var shape:String;
 		public var size:int;
 		public var timer:int = 0;
+		public var callback:Function;
 		
 		public static var rotations:Object = {};
 		
-		public function BlockButton (_x:int, _y:int, _size:int, _shape:String, _player:String)
+		public function BlockButton (_x:int, _y:int, _size:int, _shape:String, _player:String, _callback:Function = null)
 		{
 			x = _x - _size*0.5;
 			y = _y - _size*0.5;
@@ -35,22 +36,28 @@ package
 			makeImage();
 			
 			type = "button";
+			
+			callback = _callback;
+			
+			if (callback == null) callback = defaultCallback;
 		}
 		
 		private function makeImage ():void
 		{
 			if (shape == "random") {
 				image = new Image(Menu.RandomGfx);
-			} else {
+			} else if (shape) {
 				image = new Image(Main.makeShape(shape, rotations[shape+player], Menu.SmallBlockGfx));
 			}
 			
-			image.color = (player == "P1") ? 0xFFFF00 : 0xFF00FF;
-			image.centerOO();
-			image.x = size*0.5;
-			image.y = size*0.5;
+			if (image) {
+				image.color = (player == "P1") ? 0xFFFF00 : 0xFF00FF;
+				image.centerOO();
+				image.x = size*0.5;
+				image.y = size*0.5;
 			
-			graphic = image;
+				graphic = image;
+			}
 		}
 		
 		public override function update (): void
@@ -59,21 +66,28 @@ package
 			
 			timer++;
 			
-			var over:Boolean = collidePoint(x, y, world.mouseX, world.mouseY);
+			var over:Boolean = isOver();
 			
-			if (over) {
+			if (over && ! Settings.arcade) {
 				Input.mouseCursor = "button";
 			}
 			
-			if (over && Input.mousePressed) {
+			var click:Boolean = Input.mousePressed;
+			
+			if (Settings.arcade) {
+				click = Input.pressed("action" + player);
+			}
+			
+			if (over && click) {
 				callback();
 			}
 		}
 		
 		public override function render (): void
 		{
-			var over:Boolean = collidePoint(x, y, world.mouseX, world.mouseY);
-			var selected:Boolean = (Settings["menuShape"+player] == shape);
+			var over:Boolean = isOver();
+			
+			var selected:Boolean = (shape && Settings["menuShape"+player] == shape);
 			
 			if (over || selected) {
 				var g:Graphics = FP.sprite.graphics;
@@ -101,7 +115,13 @@ package
 			
 			super.render();
 			
-			if (shape != "random" && shape != "O" && selected && over && !Input.mouseDown) {
+			var mouseDown:Boolean = Input.mouseDown;
+			
+			if (Settings.arcade) {
+				mouseDown = Input.check("action" + player);
+			}
+			
+			if (shape != "random" && shape != "O" && selected && over && !mouseDown) {
 				FP.point.x = x+2;
 				FP.point.y = y+2;
 				
@@ -111,7 +131,16 @@ package
 			}
 		}
 		
-		public function callback ():void
+		public function isOver ():Boolean
+		{
+			if (Settings.arcade) {
+				return (Menu(world)["selected" + player] == this);
+			} else {
+				return collidePoint(x, y, world.mouseX, world.mouseY);
+			}
+		}
+		
+		public function defaultCallback ():void
 		{
 			var alreadySelected:Boolean = (Settings["menuShape"+player] == shape);
 			

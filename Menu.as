@@ -7,6 +7,7 @@ package
 	
 	import flash.display.*;
 	import flash.text.*;
+	import flash.system.*;
 	
 	public class Menu extends World
 	{
@@ -32,8 +33,18 @@ package
 		public var yText:int = 96;
 		
 		public var fightButton:Button;
+		public var fightText:Text;
 		
 		public var credits:Sprite = new Sprite;
+		
+		public var controls1:Button;
+		public var controls2:Button;
+		
+		public var selectedP1:Entity;
+		public var selectedP2:Entity;
+		
+		public var buttonsP1:Array = [];
+		public var buttonsP2:Array = [];
 		
 		public function Menu ()
 		{
@@ -103,7 +114,7 @@ package
 			computerNormal.centerOO();
 			computerHover.centerOO();
 			
-			var controls1:Button = new Button(x1+getDelta(1), yBlock+getDelta(1),
+			controls1 = new Button(x1+getDelta(1), yBlock+getDelta(1),
 				(Settings.classP1 == HumanPlayer) ? humanNormal : computerNormal,
 				(Settings.classP1 == HumanPlayer) ? humanHover : computerHover,
 				function():void{
@@ -112,6 +123,10 @@ package
 					controls1.hoverGraphic = computerHover;
 					
 					Settings.classP1 = Settings.classAI;
+					
+					if (! Settings.menuShapeP1) {
+						Settings.menuShapeP1 = "random";
+					}
 				} else {
 					controls1.normalGraphic = humanNormal;
 					controls1.hoverGraphic = humanHover;
@@ -125,7 +140,7 @@ package
 			
 			add(controls1);
 			
-			var controls2:Button = new Button(x2+getDelta(1), yBlock+getDelta(1),
+			controls2 = new Button(x2+getDelta(1), yBlock+getDelta(1),
 				(Settings.classP2 == HumanPlayer) ? humanNormal : computerNormal,
 				(Settings.classP2 == HumanPlayer) ? humanHover : computerHover,
 				function():void{
@@ -134,6 +149,10 @@ package
 					controls2.hoverGraphic = computerHover;
 					
 					Settings.classP2 = Settings.classAI;
+					
+					if (! Settings.menuShapeP2) {
+						Settings.menuShapeP2 = "random";
+					}
 				} else {
 					controls2.normalGraphic = humanNormal;
 					controls2.hoverGraphic = humanHover;
@@ -156,6 +175,19 @@ package
 			makeShape("I", 1, 2);
 			makeShape("S", 2, 2);
 			
+			selectedP1 = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P1", controls1.callback);
+			selectedP2 = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P2", controls2.callback);
+			
+			add(selectedP1);
+			add(selectedP2);
+			
+			buttonsP1.splice(4, 0, selectedP1);
+			buttonsP2.splice(4, 0, selectedP2);
+			
+			var tmp:* = buttonsP2[3];
+			buttonsP2[3] = buttonsP2[5];
+			buttonsP2[5] = tmp;
+			
 			fightButton = makeButton("FIGHT", function():void{
 				Settings.shapeP1 = Settings.menuShapeP1;
 				Settings.shapeP2 = Settings.menuShapeP2;
@@ -165,11 +197,21 @@ package
 				Audio.play("hit");
 			});
 			
+			fightText = new Text("Press\nTwo Player Select\nto fight", FP.width*0.5, 0, {size: 20, align:"center"});
+			
+			fightText.centerOO();
+			
 			fightButton.y = (yBlock + size2 + FP.height - 64*scale - fightButton.height)*0.5;
 			
-			fightButton.visible = false;
+			fightText.y = (yBlock + size2 + FP.height - 128)*0.5;
 			
-			add(fightButton);
+			fightText.visible = fightButton.visible = false;
+			
+			if (Settings.arcade) {
+				addGraphic(fightText);
+			} else {
+				add(fightButton);
+			}
 			
 			var offsetX:int = (FP.width - 640) * 0.5;
 			
@@ -242,12 +284,18 @@ package
 			var dx:int = getDelta(i, true);
 			var dy:int = getDelta(j, true);
 			
-			add(new BlockButton(x1 + dx, yBlock + dy, size1, shape, "P1"));
+			var b:*;
+			
+			b = add(new BlockButton(x1 + dx, yBlock + dy, size1, shape, "P1"));
+			
+			buttonsP1.push(b);
 			
 			if (shape == "O") dx = getDelta(0, true);
 			if (shape == "random") dx = getDelta(2, true);
 			
-			add(new BlockButton(x2 + dx, yBlock + dy, size1, shape, "P2"));
+			b = add(new BlockButton(x2 + dx, yBlock + dy, size1, shape, "P2"));
+			
+			buttonsP2.push(b);
 		}
 		
 		public static function makeButton (text:String, callback:Function):Button
@@ -286,8 +334,77 @@ package
 			
 			super.update();
 			
+			if (Settings.arcade) {
+				if (Input.check("1playermode") && Input.check("2playermode")) {
+					fscommand("quit");
+					return;
+				}
+				
+				for each (var p:String in ["P1", "P2"]) {
+					var array:Array = this["buttons"+p];
+					var selected:* = this["selected"+p];
+					var index:int = array.indexOf(selected);
+					
+					if (index >= 9) {
+						// TODO: health
+					} else {
+						if (Input.pressed("left"+p) && (index % 3 != 0)) {
+							index -= 1;
+						} else if (Input.pressed("right"+p) && (index % 3 != 2)) {
+							index += 1;
+						} else if (Input.pressed("up"+p) && (index >= 3)) {
+							index -= 3;
+						} else if (Input.pressed("down"+p) && (index < 6)) {
+							index += 3;
+						}
+					}
+					
+					this["selected"+p] = array[index];
+				}
+			}
+			
 			if (Settings.menuShapeP1 && Settings.menuShapeP2) {
-				fightButton.visible = true;
+				if (Settings.arcade) {
+					if (Settings.classP1 == HumanPlayer) {
+						var playerCount:String = "TWO";
+						if (Settings.classP2 != HumanPlayer) {
+							playerCount = "ONE";
+						}
+						
+						fightText.text = "Press\n" + playerCount + " PLAYER SELECT\nto fight";
+						fightText.visible = ((BlockButton(selectedP1).timer % 120) < 60);
+					}
+				} else {
+					fightButton.visible = true;
+				}
+			}
+			
+			if (Input.pressed("1playermode")) {
+				if (Settings.classP1 == HumanPlayer && Settings.classP2 != HumanPlayer && Settings.menuShapeP1 && Settings.menuShapeP2) {
+					fightButton.callback();
+					return;
+				}
+				
+				if (Settings.classP1 != HumanPlayer) {
+					controls1.callback();
+				}
+				if (Settings.classP2 == HumanPlayer) {
+					controls2.callback();
+				}
+			}
+			
+			if (Input.pressed("2playermode")) {
+				if (Settings.classP1 == HumanPlayer && Settings.classP2 == HumanPlayer && Settings.menuShapeP1 && Settings.menuShapeP2) {
+					fightButton.callback();
+					return;
+				}
+				
+				if (Settings.classP1 != HumanPlayer) {
+					controls1.callback();
+				}
+				if (Settings.classP2 != HumanPlayer) {
+					controls2.callback();
+				}
 			}
 		}
 		

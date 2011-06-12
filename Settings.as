@@ -30,6 +30,7 @@ package
 		public static var chargeJump:Boolean = false;
 		
 		public static var arcade:Boolean = true;
+		public static var arcadeControls:Boolean = false;
 		
 		public static function init ():void
 		{
@@ -39,37 +40,41 @@ package
 				classP2 = HumanPlayer;
 			}
 			
-			if (arcade) {
-				Input.define("attack1", Key.RIGHT);
-				Input.define("jump1", Key.UP);
-				Input.define("block1", Key.LEFT);
+			Input.define("attack1", Key.D);
+			Input.define("jump1", Key.S);
+			Input.define("block1", Key.A);
+		
+			Input.define("attack2", Key.J);
+			Input.define("jump2", Key.K);
+			Input.define("block2", Key.L);
 			
-				Input.define("attack2", Key.J);
-				Input.define("jump2", Key.I);
-				Input.define("block2", Key.L);
+			if (arcade) {
+				if (arcadeControls) {
+					Input.define("attack1", Key.RIGHT);
+					Input.define("jump1", Key.UP);
+					Input.define("block1", Key.LEFT);
+			
+					Input.define("attack2", Key.J);
+					Input.define("jump2", Key.I);
+					Input.define("block2", Key.L);
+				}
 				
-				Input.define("left1", Key.LEFT);
-				Input.define("right1", Key.RIGHT);
-				Input.define("up1", Key.UP);
-				Input.define("down1", Key.DOWN);
-				Input.define("action1", Key.Z, Key.X, Key.C);
+				Input.define("leftP1", Key.LEFT);
+				Input.define("rightP1", Key.RIGHT);
+				Input.define("upP1", Key.UP);
+				Input.define("downP1", Key.DOWN);
+				Input.define("actionP1", Key.Z, Key.X, Key.C);
 				
-				Input.define("left2", Key.J);
-				Input.define("right2", Key.L);
-				Input.define("up2", Key.I);
-				Input.define("down2", Key.K);
-				Input.define("action2", Key.B, Key.N, Key.M);
+				Input.define("leftP2", Key.J);
+				Input.define("rightP2", Key.L);
+				Input.define("upP2", Key.I);
+				Input.define("downP2", Key.K);
+				Input.define("actionP2", Key.B, Key.N, Key.M);
 				
 				Input.define("1playermode", Key.DIGIT_1);
 				Input.define("2playermode", Key.DIGIT_2);
-			} else {
-				Input.define("attack1", Key.D);
-				Input.define("jump1", Key.S);
-				Input.define("block1", Key.A);
-			
-				Input.define("attack2", Key.J);
-				Input.define("jump2", Key.K);
-				Input.define("block2", Key.L);
+				
+				Input.define("anykey", Key.DIGIT_1, Key.DIGIT_2, Key.Z, Key.X, Key.C, Key.B, Key.N, Key.M);
 			}
 		}
 	}
