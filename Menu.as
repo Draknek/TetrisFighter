@@ -188,16 +188,19 @@ package
 			makeShape("I", 1, 2);
 			makeShape("S", 2, 2);
 			
-			selectedP1 = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P1", dummyFunction);
-			selectedP2 = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P2", dummyFunction);
+			var tmp:*;
 			
-			add(selectedP1);
-			add(selectedP2);
+			tmp = new BlockButton(x1 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P1", dummyFunction);
 			
-			buttonsP1.splice(4, 0, selectedP1);
-			buttonsP2.splice(4, 0, selectedP2);
+			tmp = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P2", dummyFunction);
 			
-			var tmp:* = buttonsP2[3];
+			add(tmp);
+			add(tmp);
+			
+			buttonsP1.splice(4, 0, tmp);
+			buttonsP2.splice(4, 0, tmp);
+			
+			tmp = buttonsP2[3];
 			buttonsP2[3] = buttonsP2[5];
 			buttonsP2[5] = tmp;
 			
@@ -208,6 +211,9 @@ package
 			tmp = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(3, true) + lifeOffset, size1, null, "P2", dummyFunction);
 			add(tmp);
 			buttonsP2.push(tmp);
+			
+			if (! selectedP1) selectedP1 = buttonsP1[3];
+			if (! selectedP2) selectedP2 = buttonsP2[5];
 			
 			fightButton = makeButton("FIGHT", function():void{
 				Settings.shapeP1 = Settings.menuShapeP1;
@@ -346,12 +352,16 @@ package
 			
 			buttonsP1.push(b);
 			
+			if (shape == Settings.menuShapeP1) selectedP1 = b;
+			
 			if (shape == "O") dx = getDelta(0, true);
 			if (shape == "random") dx = getDelta(2, true);
 			
 			b = add(new BlockButton(x2 + dx, yBlock + dy, size1, shape, "P2"));
 			
 			buttonsP2.push(b);
+			
+			if (shape == Settings.menuShapeP2) selectedP2 = b;
 		}
 		
 		public static function makeButton (text:String, callback:Function):Button
