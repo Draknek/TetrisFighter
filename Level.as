@@ -107,6 +107,13 @@ package
 			return stamp;
 		}
 		
+		private function chooseShape(shape:String):String
+		{
+			if (shape != "random") return shape;
+			
+			return FP.choose(Main.SHAPES);
+		}
+		
 		public function Level (_doIntro:Boolean = false)
 		{
 			this.doIntro = _doIntro;
@@ -119,18 +126,48 @@ package
 				Settings.shapeP2 = "random";
 			}
 			
-			if (Settings.shapeP1 == "random") {
-				Settings.shapeP1 = FP.choose(Main.SHAPES);
-				Settings.rotationP1 = FP.rand(4);
+			Settings.shapeP1 = chooseShape(Settings.shapeP1);
+			Settings.shapeP2 = chooseShape(Settings.shapeP2);
+			
+			if (Settings.arcade) {
+				if (doIntro) {
+					Settings.rotationP1 = FP.rand(4);
+					Settings.rotationP2 = FP.rand(4);
+				
+					Settings.nextShapeP1 = chooseShape(Settings.shapeP1);
+					Settings.nextShapeP2 = chooseShape(Settings.shapeP2);
+				}
+			} else {
+				if (Settings.shapeP1 == "random") {
+					Settings.shapeP1 = FP.choose(Main.SHAPES);
+					Settings.rotationP1 = FP.rand(4);
+				}
+			
+				if (Settings.shapeP2 == "random") {
+					Settings.shapeP2 = FP.choose(Main.SHAPES);
+					Settings.rotationP1 = FP.rand(4);
+				}
+				
+				Settings.nextShapeP1 = Settings.shapeP1;
+				Settings.nextShapeP2 = Settings.shapeP2;
 			}
 			
-			if (Settings.shapeP2 == "random") {
-				Settings.shapeP2 = FP.choose(Main.SHAPES);
-				Settings.rotationP1 = FP.rand(4);
-			}
+			var shapeP1:String = Settings.nextShapeP1;
+			var shapeP2:String = Settings.nextShapeP2;
 			
-			add(p1 = new Settings.classP1(1, Settings.shapeP1, Settings.rotationP1));
-			add(p2 = new Settings.classP2(-1, Settings.shapeP2, Settings.rotationP2));
+			Settings.nextShapeP1 = Settings.shapeP1;
+			Settings.nextShapeP2 = Settings.shapeP2;
+			
+			add(p1 = new Settings.classP1(1, shapeP1, Settings.rotationP1));
+			add(p2 = new Settings.classP2(-1, shapeP2, Settings.rotationP2));
+			
+			if (Settings.arcade) {
+				Settings.rotationP1 = FP.rand(4);
+				Settings.rotationP2 = FP.rand(4);
+				
+				Settings.nextShapeP1 = chooseShape(Settings.shapeP1);
+				Settings.nextShapeP2 = chooseShape(Settings.shapeP2);
+			}
 			
 			p1.enemy = p2;
 			p2.enemy = p1;
@@ -152,8 +189,8 @@ package
 			var introSize:int = Settings.arcade ? 60 : 30;
 			var controlsSize:int = Settings.arcade ? 20 : 15;
 			
-			p1Intro = new Text("Yellow\n" + Settings.shapeP1 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
-			p2Intro = new Text("Purple\n" + Settings.shapeP2 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
+			p1Intro = new Text("Yellow\n" + shapeP1 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
+			p2Intro = new Text("Purple\n" + shapeP2 + "-Block", FP.width*0.5, 160, {size: introSize, align:"center"});
 			vs = new Text("VS", FP.width*0.5, 160, {size: vsSize});
 			p1Controls = new Text("Attack: D\n  Jump: " + (Settings.chargeJump ? "Hold " : "") + "S\n Block: A", FP.width*0.5, 240, {size:controlsSize});
 			p2Controls = new Text("Attack: J\n  Jump: " + (Settings.chargeJump ? "Hold " : "") + "K\n Block: L", FP.width*0.5, 240, {size:controlsSize});
@@ -332,6 +369,12 @@ package
 			
 			var victor:Player = (side < 0) ? p2 : p1;
 			var loser:Player = (side < 0) ? p1 : p2;
+			
+			var victorString:String = (side < 0) ? "P2" : "P1";
+			var loserString:String = (side < 0) ? "P1" : "P2";
+			
+			Settings["nextShape" + victorString] = victor.shape;
+			Settings["rotation" + victorString] = victor.rotation;
 			
 			if (! Settings.movingSides) {
 				loser.y = loser.floorY;

@@ -19,6 +19,9 @@ package
 		public static var menuShapeP1:String = null;
 		public static var menuShapeP2:String = null;
 		
+		public static var nextShapeP1:String = null;
+		public static var nextShapeP2:String = null;
+		
 		public static var rotationP1:int = 0;
 		public static var rotationP2:int = 0;
 		

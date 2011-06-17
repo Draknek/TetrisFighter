@@ -57,12 +57,14 @@ package
 		public var playedSound:Boolean = false;
 		
 		public var shape:String;
+		public var rotation:int;
 		public var outline:Image;
 		
-		public function Player (_dir:int, _shape:String, rotation:int = 0)
+		public function Player (_dir:int, _shape:String, _rotation:int = 0)
 		{
 			dir = _dir;
 			shape = _shape;
+			rotation = _rotation;
 			
 			if (shape == "random") shape = FP.choose(Main.SHAPES);
 			
