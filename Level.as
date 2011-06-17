@@ -158,10 +158,12 @@ package
 			p1Controls = new Text("Attack: D\n  Jump: " + (Settings.chargeJump ? "Hold " : "") + "S\n Block: A", FP.width*0.5, 240, {size:controlsSize});
 			p2Controls = new Text("Attack: J\n  Jump: " + (Settings.chargeJump ? "Hold " : "") + "K\n Block: L", FP.width*0.5, 240, {size:controlsSize});
 			
-			if (Settings.arcade) {
+			if (Settings.arcadeControls) {
 				p1Controls.text = "Attack: RIGHT\n  Jump: UP\n Block: LEFT";
 				p2Controls.text = "Attack: LEFT\n  Jump: UP\n Block: RIGHT";
-				
+			}
+			
+			if (Settings.arcade) {
 				p1Controls.y += 150;
 				p2Controls.y += 150;
 			}
