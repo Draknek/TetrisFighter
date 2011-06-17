@@ -21,7 +21,7 @@ package
 		public static const ModeNineFont:Class;
 		
 		public var padding1:int = 8;
-		public var paddingA:int = 0;
+		public var paddingA:int = Settings.arcade ? 4 : 0;
 		public var paddingB:int = 10;
 		public var size1:int = 64+padding1;
 		public var size2:int = size1*3+paddingA*2+paddingB*2;
@@ -90,10 +90,6 @@ package
 			credits.x = FP.screen.x;
 			credits.y = 60*scale;
 			
-			if (Settings.arcade) {
-				yBlock = 240;
-			}
-			
 			addGraphic(Level.makeFloor());
 			
 			addGraphic(Level.makeWall(false, -1));
@@ -103,6 +99,12 @@ package
 			
 			title.x = (FP.width - title.width)*0.5;
 			title.y = 14;
+			
+			if (Settings.arcade) {
+				yBlock = 275;
+				title.y = 26;
+				credits.y += 18;
+			}
 			
 			addGraphic(title);
 			
@@ -116,12 +118,16 @@ package
 			
 			var pOffset:Number = -5;
 			
-			if (Settings.arcade) pOffset = 0;
+			if (Settings.arcade) {
+				p1.color = 0xFFFF00;
+				p2.color = 0xFF00FF;
+				pOffset = -size2*0.5 - p1.height*0.5;
+			}
 			
-			//addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5 + pOffset);
-			//addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5 + pOffset);
+			addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5 + pOffset);
+			addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5 + pOffset);
 			
-			var humanNormal:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5	, {size:20, color:0x0});
+			var humanNormal:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0x0});
 			var humanHover:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0xFF0000});
 			
 			var computerNormal:Text = new Text("AI", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0x0});
