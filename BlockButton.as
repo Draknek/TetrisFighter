@@ -46,12 +46,19 @@ package
 		{
 			if (shape == "random") {
 				image = new Image(Menu.RandomGfx);
+			} else if (shape == "ai") {
+				image = new Image(Menu.AIGfx);
 			} else if (shape) {
 				image = new Image(Main.makeShape(shape, rotations[shape+player], Menu.SmallBlockGfx));
 			}
 			
 			if (image) {
-				image.color = (player == "P1") ? 0xFFFF00 : 0xFF00FF;
+				if (shape == "ai") {
+					image.color = 0xAAAAAA;
+				} else {
+					image.color = (player == "P1") ? 0xFFFF00 : 0xFF00FF;
+				}
+				
 				image.centerOO();
 				image.x = size*0.5;
 				image.y = size*0.5;
@@ -100,10 +107,10 @@ package
 				
 				if (over && (timer % 60) < 30) {
 					g.lineStyle(2, 0xFF0000);
-				} else if (over) {
-					g.lineStyle(2, 0x999999);
 				} else if (selected) {
 					g.lineStyle(2, 0x0000FF);
+				} else if (over) {
+					g.lineStyle(2, 0x999999);
 				}
 				
 				g.drawRoundRect(x+1, y+1, width-2, height-2, 10);
@@ -118,7 +125,8 @@ package
 			var mouseDown:Boolean = Input.mouseDown;
 			
 			if (Settings.arcade) {
-				mouseDown = Input.check("action" + player);
+				return;
+				//mouseDown = Input.check("action" + player);
 			}
 			
 			if (shape != "random" && shape != "O" && selected && over && !mouseDown) {
@@ -144,7 +152,7 @@ package
 		{
 			var alreadySelected:Boolean = (Settings["menuShape"+player] == shape);
 			
-			if (alreadySelected && (shape == "random" || shape == "O")) {
+			if (alreadySelected && (Settings.arcade || shape == "random" || shape == "O")) {
 				return;
 			}
 			

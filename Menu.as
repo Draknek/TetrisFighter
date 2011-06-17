@@ -13,6 +13,7 @@ package
 	{
 		[Embed(source="block-small.png")] public static const SmallBlockGfx: Class;
 		[Embed(source="random.png")] public static const RandomGfx: Class;
+		[Embed(source="images/ai.png")] public static const AIGfx: Class;
 		[Embed(source="images/arrows.png")] public static const ArrowGfx: Class;
 		[Embed(source="images/rotate.png")] public static const RotateGfx: Class;
 		
@@ -52,6 +53,11 @@ package
 		public var lifeOffset:int = 16;
 		
 		private function dummyFunction ():void {}
+		
+		private var upP1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+		private var upP2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+		private var downP1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+		private var downP2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
 		
 		public function Menu ()
 		{
@@ -112,8 +118,8 @@ package
 			
 			if (Settings.arcade) pOffset = 0;
 			
-			addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5 + pOffset);
-			addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5 + pOffset);
+			//addGraphic(p1, -1, x1+size2*0.5, yBlock+size2*0.5 + pOffset);
+			//addGraphic(p2, -1, x2+size2*0.5, yBlock+size2*0.5 + pOffset);
 			
 			var humanNormal:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5	, {size:20, color:0x0});
 			var humanHover:Text = new Text("Human", size1*0.5, size1*0.5 + p1.height*0.5, {size:20, color:0xFF0000});
@@ -183,6 +189,7 @@ package
 			makeShape("T", 1, 0);
 			makeShape("L", 2, 0);
 			makeShape("random", 0, 1);
+			makeShape("ai", 1, 1);
 			makeShape("O", 2, 1);
 			makeShape("Z", 0, 2);
 			makeShape("I", 1, 2);
@@ -194,11 +201,11 @@ package
 			
 			tmp = new BlockButton(x2 + getDelta(1, true), yBlock + getDelta(1, true), size1, null, "P2", dummyFunction);
 			
-			add(tmp);
-			add(tmp);
+			//add(tmp);
+			//add(tmp);
 			
-			buttonsP1.splice(4, 0, tmp);
-			buttonsP2.splice(4, 0, tmp);
+			//buttonsP1.splice(4, 0, tmp);
+			//buttonsP2.splice(4, 0, tmp);
 			
 			tmp = buttonsP2[3];
 			buttonsP2[3] = buttonsP2[5];
@@ -220,6 +227,18 @@ package
 				Settings.shapeP2 = Settings.menuShapeP2;
 				Settings.rotationP1 = Settings.menuRotationP1;
 				Settings.rotationP2 = Settings.menuRotationP2;
+				
+				if (Settings.arcade) {
+					for each (var p:String in ["P1", "P2"]) {
+						if (Settings["menuShape"+p] == "ai") {
+							Settings["shape"+p] = "random";
+							Settings["class"+p] = Settings.classAI;
+						} else {
+							Settings["class"+p] = HumanPlayer;
+						}
+					}
+				}
+				
 				FP.world = new Level(true);
 				Audio.play("hit");
 			});
@@ -275,34 +294,42 @@ package
 			addGraphic(lives1);
 			addGraphic(lives2);
 			
-			if (! Settings.arcade) {
-				var up1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
-				var up2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
-				var down1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
-				var down2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
+			downP1.frame = 1;
+			downP2.frame = 1;
 			
-				down1.frame = 1;
-				down2.frame = 1;
+			if (Settings.arcade) {
+				upP1.centerOO();
+				upP2.centerOO();
+				downP1.centerOO();
+				downP2.centerOO();
+				upP1.angle = upP2.angle = downP1.angle = downP2.angle = -90;
+				
+				upP1.visible = upP2.visible = downP1.visible = downP2.visible = false;
+				
+				addGraphic(upP1, 0, x1 + size2*0.5 + size1*0.5 + 10, lifeG1.y + lifeG1.height*0.5);
+				addGraphic(upP2, 0, x2 + size2*0.5 + size1*0.5 + 10, lifeG1.y + lifeG1.height*0.5);
+				addGraphic(downP1, 0, x1 + size2*0.5 - size1*0.5 - 10, lifeG1.y + lifeG1.height*0.5);
+				addGraphic(downP2, 0, x2 + size2*0.5 - size1*0.5 - 10, lifeG1.y + lifeG1.height*0.5);
+			} else {
+				upP2.color = 0xFF0000;
+				downP2.color = 0xFF0000;
 			
-				up2.color = 0xFF0000;
-				down2.color = 0xFF0000;
-			
-				var upB1:Button = new Button(offsetX + 96+40, 480-128-2, up1, up2, function ():void {
+				var upB1:Button = new Button(offsetX + 96+40, 480-128-2, upP1, upP2, function ():void {
 					Settings.livesP1 += 1;
 					updateLives();
 				});
 			
-				var downB1:Button = new Button(offsetX + 96+40, 480-128-2+18, down1, down2, function ():void {
+				var downB1:Button = new Button(offsetX + 96+40, 480-128-2+18, downP1, downP2, function ():void {
 					Settings.livesP1 -= 1;
 					updateLives();
 				});
 			
-				var upB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2, up1, up2, function ():void {
+				var upB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2, upP1, upP2, function ():void {
 					Settings.livesP2 += 1;
 					updateLives();
 				});
 			
-				var downB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2+18, down1, down2, function ():void {
+				var downB2:Button = new Button(offsetX + 640-96-40-17, 480-128-2+18, downP1, downP2, function ():void {
 					Settings.livesP2 -= 1;
 					updateLives();
 				});
@@ -406,12 +433,25 @@ package
 					return;
 				}
 				
+				upP1.visible = upP2.visible = downP1.visible = downP2.visible = false;
+				upP1.color = upP2.color = downP1.color = downP2.color = 0xFFFFFF;
+				
 				for each (var p:String in ["P1", "P2"]) {
 					var array:Array = this["buttons"+p];
 					var selected:* = this["selected"+p];
 					var index:int = array.indexOf(selected);
 					
 					if (index >= 9) {
+						this["up" + p].visible = this["down" + p].visible = true;
+						
+						if (Input.check("left"+p)) {
+							this["down" + p].color = 0xFF0000;
+						}
+						
+						if (Input.check("right"+p)) {
+							this["up" + p].color = 0xFF0000;
+						}
+						
 						if (Input.pressed("left"+p)) {
 							Settings["lives"+p] -= 1;
 							updateLives();
