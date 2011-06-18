@@ -83,13 +83,15 @@ package
 			return stamp;
 		}
 		
-		public static function makeWall(moving:Boolean, dx:int):Stamp
+		public static function makeWall(moving:Boolean, dx:int, stamp:Stamp = null):Stamp
 		{
 			var sideHeight:int = FP.height + 64;
 			
 			if (moving) sideHeight *= 2;
 			
-			var stamp:Stamp = new Stamp(new BitmapData(32, sideHeight), 0, -64);
+			if (! stamp) {
+				stamp = new Stamp(new BitmapData(32, sideHeight), 0, -64);
+			}
 			
 			if (dx > 0) stamp.x = FP.width - stamp.width;
 			
@@ -401,6 +403,12 @@ package
 			if (livesP1 > 0 && livesP2 > 0) {
 				f = function ():void {
 					var newBlocks:Stamp = (side < 0) ? left : right;
+					
+					makeWall(Settings.movingSides, victor.dir, newBlocks);
+					
+					var fakePlayerHack:Player = new Player(loser.dir, Settings["shape"+loserString], Settings["rotation"+loserString]);
+					fakePlayerHack.makeHole(newBlocks.source);
+					
 					newBlocks.x = x + side*32;
 					newBlocks.y = -64;
 			
