@@ -164,7 +164,7 @@ package
 			Settings["menuShape"+player] = shape;
 			Settings["menuRotation"+player] = rotations[shape+player] % 4;
 			
-			Audio.play("block");
+			Audio.play("hit");
 		}
 		
 	}

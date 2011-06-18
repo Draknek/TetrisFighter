@@ -483,8 +483,10 @@ package
 						
 						if (Input.pressed("left"+p)) {
 							Settings["lives"+p] -= 1;
+							Audio.play("hit");
 							updateLives();
 						} else if (Input.pressed("right"+p)) {
+							Audio.play("hit");
 							Settings["lives"+p] += 1;
 							updateLives();
 						} else if (Input.pressed("up"+p)) {
@@ -506,7 +508,10 @@ package
 						}
 					}
 					
-					this["selected"+p] = array[index];
+					if (this["selected"+p] != array[index]) {
+						this["selected"+p] = array[index];
+						Audio.play("block");
+					}
 				}
 			}
 			

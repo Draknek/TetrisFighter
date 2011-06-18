@@ -78,6 +78,7 @@ package
 				Input.define("2playermode", Key.DIGIT_2);
 				
 				Input.define("anykey", Key.DIGIT_1, Key.DIGIT_2, Key.Z, Key.X, Key.C, Key.B, Key.N, Key.M);
+				Input.define("anymovement", Key.LEFT, Key.RIGHT, Key.UP, Key.DOWN, Key.J, Key.K, Key.L, Key.I);
 			}
 		}
 	}
