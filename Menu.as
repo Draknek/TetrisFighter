@@ -59,6 +59,9 @@ package
 		private var downP1:Spritemap = new Spritemap(ArrowGfx, 17, 18);
 		private var downP2:Spritemap = new Spritemap(ArrowGfx, 17, 18);
 		
+		public var readyP1:Text;
+		public var readyP2:Text;
+		
 		public function Menu ()
 		{
 			var css1:String = 'a:hover { text-decoration: underline; } \
@@ -228,6 +231,9 @@ package
 			if (! selectedP1) selectedP1 = buttonsP1[3];
 			if (! selectedP2) selectedP2 = buttonsP2[5];
 			
+			Settings.menuShapeP1 = null;
+			Settings.menuShapeP2 = null;
+			
 			fightButton = makeButton("FIGHT", function():void{
 				Settings.shapeP1 = Settings.menuShapeP1;
 				Settings.shapeP2 = Settings.menuShapeP2;
@@ -280,6 +286,23 @@ package
 			updateLives();
 			
 			if (Settings.arcade) {
+				readyP1 = new Text("Ready!", 0, 0, {size:30});
+				readyP2 = new Text("Ready!", 0, 0, {size:30});
+				
+				readyP1.centerOO();
+				readyP2.centerOO();
+				
+				readyP1.x = x1+size2;
+				readyP2.x = x2;
+				
+				readyP1.y = readyP2.y = yBlock+size2*0.5 + pOffset;
+				
+				readyP1.visible = false;
+				readyP2.visible = false;
+				
+				addGraphic(readyP1);
+				addGraphic(readyP2);
+				
 				var w:Number = lifeG1.width + lives1.width;
 				
 				lifeG1.x = x1 + size2*0.5 - w*0.5 + 1;
@@ -487,48 +510,28 @@ package
 				}
 			}
 			
-			if (Settings.menuShapeP1 && Settings.menuShapeP2) {
-				if (Settings.arcade) {
-					if (Settings.classP1 == HumanPlayer) {
-						var playerCount:String = "TWO";
-						if (Settings.classP2 != HumanPlayer) {
-							playerCount = "ONE";
-						}
-						
-						fightText.text = "Press\n" + playerCount + " PLAYER SELECT\nto fight";
-						fightText.visible = ((buttonsP1[0].timer % 120) < 60);
+			if (Settings.menuShapeP1 && Settings.menuShapeP2 && ! Settings.arcade) {
+				fightButton.visible = true;
+			}
+			
+			if (Settings.arcade) {
+				readyP1.visible = (Settings.menuShapeP1 != null && (buttonsP1[0].timer % 60) < 30);
+				readyP2.visible = (Settings.menuShapeP2 != null && (buttonsP1[0].timer % 60) < 30);
+				
+				if (Input.pressed("1playermode")) {
+					Settings.menuShapeP2 = "ai";
+					selectedP2 = buttonsP2[4];
+				}
+			
+				if (Input.pressed("2playermode")) {
+					if (Settings.menuShapeP2 == "ai") {
+						Settings.menuShapeP2 = null;
 					}
-				} else {
-					fightButton.visible = true;
-				}
-			}
-			
-			if (Input.pressed("1playermode")) {
-				if (Settings.classP1 == HumanPlayer && Settings.classP2 != HumanPlayer && Settings.menuShapeP1 && Settings.menuShapeP2) {
-					fightButton.callback();
-					return;
 				}
 				
-				/*if (Settings.classP1 != HumanPlayer) {
-					controls1.callback();
-				}
-				if (Settings.classP2 == HumanPlayer) {
-					controls2.callback();
-				}*/
-			}
-			
-			if (Input.pressed("2playermode")) {
-				if (Settings.classP1 == HumanPlayer && Settings.classP2 == HumanPlayer && Settings.menuShapeP1 && Settings.menuShapeP2) {
+				if (Settings.menuShapeP1 && Settings.menuShapeP2) {
 					fightButton.callback();
-					return;
 				}
-				
-				/*if (Settings.classP1 != HumanPlayer) {
-					controls1.callback();
-				}
-				if (Settings.classP2 != HumanPlayer) {
-					controls2.callback();
-				}*/
 			}
 		}
 		
