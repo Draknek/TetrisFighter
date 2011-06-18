@@ -62,6 +62,8 @@ package
 		public var readyP1:Text;
 		public var readyP2:Text;
 		
+		public var playerInput:Boolean = true;
+		
 		public function Menu ()
 		{
 			var css1:String = 'a:hover { text-decoration: underline; } \
@@ -452,11 +454,15 @@ package
 		
 		public override function update (): void
 		{
-			Input.mouseCursor = "auto";
+			if (Settings.arcade) {
+				Input.mouseCursor = "hide";
+			} else {
+				Input.mouseCursor = "auto";
+			}
 			
 			super.update();
 			
-			if (Settings.arcade) {
+			if (Settings.arcade && playerInput) {
 				if (Input.check("1playermode") && Input.check("2playermode")) {
 					fscommand("quit");
 					return;
@@ -523,19 +529,26 @@ package
 				readyP1.visible = (Settings.menuShapeP1 != null && (buttonsP1[0].timer % 60) < 30);
 				readyP2.visible = (Settings.menuShapeP2 != null && (buttonsP1[0].timer % 60) < 30);
 				
-				if (Input.pressed("1playermode")) {
-					Settings.menuShapeP2 = "ai";
-					selectedP2 = buttonsP2[4];
-				}
-			
-				if (Input.pressed("2playermode")) {
-					if (Settings.menuShapeP2 == "ai") {
-						Settings.menuShapeP2 = null;
+				if (playerInput) {
+					if (Input.pressed("1playermode")) {
+						Settings.menuShapeP2 = "ai";
+						selectedP2 = buttonsP2[4];
 					}
-				}
+			
+					if (Input.pressed("2playermode")) {
+						if (Settings.menuShapeP2 == "ai") {
+							Settings.menuShapeP2 = null;
+						}
+					}
 				
-				if (Settings.menuShapeP1 && Settings.menuShapeP2) {
-					fightButton.callback();
+					if (Settings.menuShapeP1 && Settings.menuShapeP2) {
+						playerInput = false;
+					
+						FP.alarm(60, fightButton.callback);
+					
+						selectedP1 = null;
+						selectedP2 = null;
+					}
 				}
 			}
 		}
